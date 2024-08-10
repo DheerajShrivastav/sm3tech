@@ -1,22 +1,31 @@
-import { authMiddleware, clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
-const isPublicRoute = createRouteMatcher(['/sign-in', '/sign-up', '/'])
-const isPublicApiRoute = createRouteMatcher(['/api/videos', '/home'])
+const isPublicRoute = createRouteMatcher(['/sign-in', '/sign-up', '/site'])
+const isPublicApiRoute = createRouteMatcher(['/api/videos'])
 
 export default clerkMiddleware((auth, req) => {
   const { userId } = auth()
   const currentUrl = new URL(req.url)
   const isAccessingDashboard = currentUrl.pathname === '/home'
   const isApiRequest = currentUrl.pathname.startsWith('/api')
-    console.log('inside the middleware')
+  console.log(userId)
+  // Prevent redirect loops when accessing the /agency/sign-in page
+  if (
+    currentUrl.pathname === '/agency/sign-in' ||
+    currentUrl.pathname === '/agency/sign-up'
+  ) {
+    return NextResponse.next() // Allow the user to access the sign-in page
+  }
+
   // If user is logged in and accessing a public route but not the dashboard
   if (userId && isPublicRoute(req) && !isAccessingDashboard) {
     return NextResponse.redirect(new URL('/home', req.url))
   }
-  //not logged in
+
+  // If not logged in
   if (!userId) {
-    // If user is not logged in and trying to access a protected route
+    // If user is trying to access a protected route
     if (!isPublicRoute(req) && !isPublicApiRoute(req)) {
       return NextResponse.redirect(new URL('/sign-in', req.url))
     }
@@ -25,11 +34,18 @@ export default clerkMiddleware((auth, req) => {
     if (isApiRequest && !isPublicApiRoute(req)) {
       return NextResponse.redirect(new URL('/sign-in', req.url))
     }
+
+    // If the user is trying to access sign-in or sign-up page
+    if (
+      currentUrl.pathname === '/sign-in' ||
+      currentUrl.pathname === '/sign-up'
+    ) {
+      return NextResponse.redirect(new URL('/agency/sign-in', req.url))
+    }
   }
+
   return NextResponse.next()
 })
-
-
 
 export const config = {
   matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],

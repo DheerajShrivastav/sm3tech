@@ -1,6 +1,7 @@
 import { currentUser } from "@clerk/nextjs/server"
 import { db } from "./db"
 import { User, IUser } from "@/models/user.model"
+import { errorToJSON } from "next/dist/server/render"
 // write a query to save the current user's profile form clerk provider in mongodb
 
 export const initUser = async (newUser: Partial<IUser>) => {
@@ -9,18 +10,23 @@ export const initUser = async (newUser: Partial<IUser>) => {
   if (!user) return
 
   // Find and update or create the user
-  const userData = await User.updateOne(
-    { email: user.emailAddresses[0].emailAddress }, // Query condition
-    {
-      ...newUser,
-      id: user.id,
-      avatar: user.imageUrl,
-      name: `${user?.firstName} ${user?.lastName}`,
-    }, // Update data
-    {
-      new: true, // Return the updated document
-      upsert: true, // Create a new document if one doesn't match the query
-    }
-  )
-  return userData
-}
+  try {
+    const userData = await User.updateOne(
+      { email: user.emailAddresses[0].emailAddress }, // Query condition
+      {
+        ...newUser,
+        id: user.id,
+        avatar: user.imageUrl,
+        name: `${user?.firstName} ${user?.lastName}`,
+      }, // Update data
+      {
+        new: true, // Return the updated document
+        upsert: true, // Create a new document if one doesn't match the query
+      }
+    )
+    return userData
+  } catch (error) {
+    return error
+    
+  }
+  } 

@@ -14,8 +14,7 @@ export interface IAgency extends Document {
   tags?: string[] // Optional field
   location?: string
   owner: mongoose.Types.ObjectId
-  createdAt: Date
-  updatedAt: Date
+  
 }
 
 // Define the Agency schema

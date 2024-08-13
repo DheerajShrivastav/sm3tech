@@ -1,18 +1,18 @@
-import { connectDB } from '@/lib/db'
-import { initUser } from '@/lib/queries'
-import { currentUser } from '@clerk/nextjs/server'
-import React from 'react'
+import AgencyDetails from '@/components/forms/agency-details'
+import { getUser, initUser } from '@/lib/queries'
 
 type Props = {}
 
-const Home = async (props: Props) => {
-    connectDB()
-    const user = await currentUser()
-    
-    if (user) {
-      await initUser(user) 
-    }
-  return <div>Home user details are : {[user?.id, user?.emailAddresses[0].emailAddress]}</div>
+const Home = async(props: Props) => {
+  let userdata = JSON.stringify(await initUser({}))
+  const user = JSON.stringify(await getUser())
+  return (
+    <div>
+      {user}
+      {userdata}
+      <AgencyDetails/>
+    </div>
+  )
 }
 
 export default Home

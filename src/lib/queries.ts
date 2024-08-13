@@ -1,32 +1,41 @@
-import { currentUser } from "@clerk/nextjs/server"
-import { db } from "./db"
-import { User, IUser } from "@/models/user.model"
-import { errorToJSON } from "next/dist/server/render"
-// write a query to save the current user's profile form clerk provider in mongodb
-
+import { useUser } from '@clerk/nextjs'
+import { connectDB } from './db'
+import { User, IUser } from '@/models/user.model'
+import { currentUser } from '@clerk/nextjs/server'
+// Write a query to save the current user's profile from Clerk provider in MongoDB
 export const initUser = async (newUser: Partial<IUser>) => {
-  // Assuming you have a function to get the current user, similar to `currentUser()`
-  const user = await currentUser()
+  const user  = await currentUser()
   if (!user) return
 
   // Find and update or create the user
   try {
+    await connectDB()
     const userData = await User.updateOne(
       { email: user.emailAddresses[0].emailAddress }, // Query condition
       {
         ...newUser,
         id: user.id,
         avatar: user.imageUrl,
-        name: `${user?.firstName} ${user?.lastName}`,
+        name: `${user.firstName} ${user.lastName}`,
       }, // Update data
-      {
-        new: true, // Return the updated document
-        upsert: true, // Create a new document if one doesn't match the query
-      }
+      { upsert: true } // Create the document if it doesn't exist
     )
     return userData
   } catch (error) {
-    return error
-    
+    console.error('Error updating user:', error)
+    throw new Error('Error updating user')
   }
-  } 
+}
+export const getUser = async () => {
+  const user = await currentUser()
+  if (!user) return
+
+  try {
+    await connectDB()
+    const userData = await User.findOne({ email: user.emailAddresses[0].emailAddress })
+    return userData
+  } catch (error) {
+    console.error('Error getting user:', error)
+    throw new Error('Error getting user')
+  }
+}

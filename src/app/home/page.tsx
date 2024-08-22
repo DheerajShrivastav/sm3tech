@@ -1,5 +1,7 @@
 import AgencyDetails from '@/components/forms/agency-details'
+import { ModeToggle } from '@/components/global/mode-toggle'
 import { getUser, initUser } from '@/lib/queries'
+import { UserButton } from '@clerk/nextjs'
 
 type Props = {}
 
@@ -10,6 +12,8 @@ const Home = async(props: Props) => {
     <div>
       {user}
       {userdata}
+      <UserButton/>
+      <ModeToggle/>
       <AgencyDetails/>
     </div>
   )

@@ -10,7 +10,7 @@ const AgencyDetails = async () => {
   // await initUser({})
   return (
     <div>
-      <FileUpload apiEndpoint="pdfUploader" onChange={() => {}} />
+      <FileUpload apiEndpoint="pdfUploader" onChange={() => {}}  />
     </div>
   )
 }

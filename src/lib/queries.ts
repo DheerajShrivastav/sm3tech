@@ -1,3 +1,4 @@
+'use server'
 import { useUser } from '@clerk/nextjs'
 import { connectDB } from './db'
 import { User, IUser } from '@/models/user.model'

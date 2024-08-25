@@ -2,7 +2,7 @@
 import { FileIcon, X } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
-// import { Button } from '../ui/button'
+import { Button } from './ui/button'
 import { UploadDropzone } from '@/lib/uploadthing'
 
 type Props = {
@@ -39,10 +39,10 @@ const FileUpload = ({ apiEndpoint, onChange, value }: Props) => {
             </a>
           </div>
         )}
-        <button onClick={() => onChange('')}  type="button">
+        <Button onClick={() => onChange('')} variant="ghost" type="button">
           <X className="h-4 w-4" />
-          Remove Logo
-        </button>
+          Remove
+        </Button>
       </div>
     )
   }

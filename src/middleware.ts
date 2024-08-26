@@ -1,8 +1,15 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
-const isPublicRoute = createRouteMatcher(['/sign-in', '/sign-up', '/site'])
-const isPublicApiRoute = createRouteMatcher(['/api/videos'])
+const isPublicRoute = createRouteMatcher([
+  '/sign-in',
+  '/sign-up',
+  '/home',
+  '/api',
+  '/site',
+  '/api/uploadthing',
+])
+const isPublicApiRoute = createRouteMatcher(['/api/videos', '/api/uploadthing'])
 
 export default clerkMiddleware((auth, req) => {
   const { userId } = auth()
@@ -10,6 +17,7 @@ export default clerkMiddleware((auth, req) => {
   const isAccessingDashboard = currentUrl.pathname === '/home'
   const isApiRequest = currentUrl.pathname.startsWith('/api')
   console.log(userId)
+  if(isApiRequest)  return NextResponse.next()
   // Prevent redirect loops when accessing the /agency/sign-in page
   if (
     currentUrl.pathname === '/agency/sign-in' ||

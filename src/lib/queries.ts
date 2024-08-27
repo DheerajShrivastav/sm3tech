@@ -45,25 +45,142 @@ export const getUser = async () => {
 }
 
 export const upsertAgency = async (agencyData: Partial<IAgency>) => {
-  // if (!agencyData.email) return null
-
   try {
-    console.log("inside the upsertdata", agencyData)
-    let agency = await Agency.findOne({_id: agencyData._id})
-    if(agency){
+    console.log('inside the upsertdata', agencyData)
+    let agency = await Agency.findOne({ _id: agencyData._id })
+    if (agency) {
       agency = await Agency.findByIdAndUpdate(
         agency._id,
-        {$set: agencyData},
-        {new: true}
+        {
+          $set: {
+            ...agencyData,
+            occupierDocuments: {
+              name: agencyData.occupierDocuments?.name,
+              photo: agencyData.occupierDocuments?.photo,
+              signature: agencyData.occupierDocuments?.signature,
+            },
+            applicantIdProof: {
+              electionId: agencyData.applicantIdProof?.electionId,
+              drivingLicense: agencyData.applicantIdProof?.drivingLicense,
+              aadharCard: agencyData.applicantIdProof?.aadharCard,
+              passport: agencyData.applicantIdProof?.passport,
+              panCard: agencyData.applicantIdProof?.panCard,
+            },
+            previousFactoryLicense: {
+              previousFactoryLicense:
+                agencyData.previousFactoryLicense?.previousFactoryLicense,
+              planApprovalLetter:
+                agencyData.previousFactoryLicense?.planApprovalLetter,
+            },
+            privateLimitedCompany: {
+              listOfDirectors:
+                agencyData.privateLimitedCompany?.listOfDirectors,
+              moa: agencyData.privateLimitedCompany?.moa,
+              boardResolution:
+                agencyData.privateLimitedCompany?.boardResolution,
+              form32: agencyData.privateLimitedCompany?.form32,
+            },
+            listOfRawMaterials: {
+              listOfRawMaterials:
+                agencyData.listOfRawMaterials?.listOfRawMaterials,
+            },
+            ownershipDocuments: {
+              leaveAndLicenseAgreement:
+                agencyData.ownershipDocuments?.leaveAndLicenseAgreement,
+              midcAllotmentLetter:
+                agencyData.ownershipDocuments?.midcAllotmentLetter,
+              sevenTwelveExtract:
+                agencyData.ownershipDocuments?.sevenTwelveExtract,
+              taxReceipt: agencyData.ownershipDocuments?.taxReceipt,
+            },
+            localAuthorityNoC: {
+              localAuthorityNoC:
+                agencyData.localAuthorityNoC?.localAuthorityNoC,
+              corporationNoC: agencyData.localAuthorityNoC?.corporationNoC,
+              grampanchayatNoC: agencyData.localAuthorityNoC?.grampanchayatNoC,
+              midcNoC: agencyData.localAuthorityNoC?.midcNoC,
+            },
+            mpcbConsent: {
+              mpcbConsent: agencyData.mpcbConsent?.mpcbConsent,
+            },
+            sketchFactory: {
+              sketch: agencyData.sketchFactory?.sketch,
+            },
+            electricityBill: {
+              electricityBill: agencyData.electricityBill?.electricityBill,
+              loadSanctionletter:
+                agencyData.electricityBill?.loadSanctionletter,
+            },
+            acceptanceLetter: {
+              acceptanceLetter: agencyData.acceptanceLetter?.acceptanceLetter,
+            },
+            flowChart: {
+              flowChart: agencyData.flowChart?.flowChart,
+            },
+          },
+        },
+        { new: true }
       )
-    }else{
+    } else {
       agency = new Agency({
         ...agencyData,
-        users:[agencyData.email],
-        email:agencyData.email,
-        addharcard: agencyData.addharcard,
-        photo : agencyData.photo,
-
+        occupierDocuments: {
+          name: agencyData.occupierDocuments?.name,
+          photo: agencyData.occupierDocuments?.photo,
+          signature: agencyData.occupierDocuments?.signature,
+        },
+        applicantIdProof: {
+          electionId: agencyData.applicantIdProof?.electionId,
+          drivingLicense: agencyData.applicantIdProof?.drivingLicense,
+          aadharCard: agencyData.applicantIdProof?.aadharCard,
+          passport: agencyData.applicantIdProof?.passport,
+          panCard: agencyData.applicantIdProof?.panCard,
+        },
+        previousFactoryLicense: {
+          previousFactoryLicense:
+            agencyData.previousFactoryLicense?.previousFactoryLicense,
+          planApprovalLetter:
+            agencyData.previousFactoryLicense?.planApprovalLetter,
+        },
+        privateLimitedCompany: {
+          listOfDirectors: agencyData.privateLimitedCompany?.listOfDirectors,
+          moa: agencyData.privateLimitedCompany?.moa,
+          boardResolution: agencyData.privateLimitedCompany?.boardResolution,
+          form32: agencyData.privateLimitedCompany?.form32,
+        },
+        listOfRawMaterials: {
+          listOfRawMaterials: agencyData.listOfRawMaterials?.listOfRawMaterials,
+        },
+        ownershipDocuments: {
+          leaveAndLicenseAgreement:
+            agencyData.ownershipDocuments?.leaveAndLicenseAgreement,
+          midcAllotmentLetter:
+            agencyData.ownershipDocuments?.midcAllotmentLetter,
+          sevenTwelveExtract: agencyData.ownershipDocuments?.sevenTwelveExtract,
+          taxReceipt: agencyData.ownershipDocuments?.taxReceipt,
+        },
+        localAuthorityNoC: {
+          localAuthorityNoC: agencyData.localAuthorityNoC?.localAuthorityNoC,
+          corporationNoC: agencyData.localAuthorityNoC?.corporationNoC,
+          grampanchayatNoC: agencyData.localAuthorityNoC?.grampanchayatNoC,
+          midcNoC: agencyData.localAuthorityNoC?.midcNoC,
+        },
+        mpcbConsent: {
+          mpcbConsent: agencyData.mpcbConsent?.mpcbConsent,
+        },
+        sketchFactory: {
+          sketch: agencyData.sketchFactory?.sketch,
+        },
+        electricityBill: {
+          electricityBill: agencyData.electricityBill?.electricityBill,
+          loadSanctionletter: agencyData.electricityBill?.loadSanctionletter,
+        },
+        acceptanceLetter: {
+          acceptanceLetter: agencyData.acceptanceLetter?.acceptanceLetter,
+        },
+        flowChart: {
+          flowChart: agencyData.flowChart?.flowChart,
+        },
       })
       await agency.save()
     }

@@ -8,6 +8,7 @@ const isPublicRoute = createRouteMatcher([
   '/api',
   '/site',
   '/api/uploadthing',
+  '/admin',
 ])
 const isPublicApiRoute = createRouteMatcher(['/api/videos', '/api/uploadthing'])
 

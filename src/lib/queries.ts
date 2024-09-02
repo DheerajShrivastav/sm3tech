@@ -4,6 +4,7 @@ import { connectDB, db } from './db'
 import { User, IUser } from '@/models/user.model'
 import { currentUser } from '@clerk/nextjs/server'
 import { Agency, IAgency } from '@/models/agency.model'
+import { get } from 'http'
 // Write a query to save the current user's profile from Clerk provider in MongoDB
 export const initUser = async (newUser: Partial<IUser>) => {
   const user = await currentUser()
@@ -29,14 +30,16 @@ export const initUser = async (newUser: Partial<IUser>) => {
   }
 }
 export const getUser = async () => {
-  const user = await currentUser()
-  if (!user) return
-
+  
   try {
+    const user = await currentUser()
+    if (!user) return
     await connectDB()
     const userData = await User.findOne({
       email: user.emailAddresses[0].emailAddress,
     })
+      .lean()
+      .exec()
     return userData
   } catch (error) {
     console.error('Error getting user:', error)
@@ -181,11 +184,23 @@ export const upsertAgency = async (agencyData: Partial<IAgency>) => {
         flowChart: {
           flowChart: agencyData.flowChart?.flowChart,
         },
+        user: getUser(),
       })
       await agency.save()
     }
     return JSON.stringify(agency)
   } catch (error) {
     console.log(error)
+  }
+}
+// get all agencies
+export const getAgencies = async () => {
+  try {
+    await connectDB()
+    const agencies = await Agency.find({}).populate('user').lean().exec()
+    return agencies
+  } catch (error) {
+    console.error('Error getting agencies:', error)
+    throw new Error('Error getting agencies')
   }
 }

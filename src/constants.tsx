@@ -88,7 +88,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   
   {
     title: "inspection-view",
-    path: "/inspection-view",
+    path: "home/inspection-view",
     icon: <Icon icon="lucide:mail" width="24" height="24" />,
   },
   

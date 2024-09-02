@@ -30,14 +30,20 @@ const Page = () => {
 const form = useForm<z.infer<typeof FormSchema>>({
   resolver: zodResolver(FormSchema),
 })
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: { name: string; password: string }) => {
     // Handle form submission here
-    console.log(data)
-    if(data.name ==='admin' || data.password === '123456789'){
-        console.log("here is")
-        return router.push('/view')
+    // adimin can login with name: admin and password: 123456789
+    // and can view the all users documents and delete them
+    if(data.name === 'admin' && data.password === '123456789'){
+
+      router.push('/admin/dashboard')
     }
+    else{
+      alert('Invalid name or password')
+    }
+    
   }
+
 
   return (
     <AlertDialog>

@@ -4,6 +4,7 @@ export interface IUser extends Document {
   name: string
   email: string
   avatar: string // added to match the schema
+  role?: 'Admin' | 'User' | string
 }
 
 const UserSchema = new Schema<IUser>(
@@ -20,6 +21,11 @@ const UserSchema = new Schema<IUser>(
     avatar: {
       type: String, // cloudinary URL
       required: true,
+    },
+    role: {
+      type: String,
+      enum: ['Admin', 'User'],
+      default: 'User',
     },
   },
   { timestamps: true }

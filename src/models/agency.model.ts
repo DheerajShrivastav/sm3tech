@@ -2,6 +2,7 @@ import mongoose, { Document, model, Schema } from 'mongoose'
 
 // Define the IAgency interface and export it
 export interface IAgency extends Document {
+  user : typeof mongoose.Schema.ObjectId
   occupierDocuments: {
     name: string
     photo: string
@@ -55,11 +56,13 @@ export interface IAgency extends Document {
   flowChart: {
     flowChart?: string
   }
+  status: 'pending' | 'approved' | 'rejected'
 }
 
 // Define the Agency schema
 const AgencySchema = new Schema<IAgency>(
   {
+    user: { type: mongoose.Schema.ObjectId , ref: 'User', required: true },
     occupierDocuments: {
       name: { type: String, required: true },
       photo: { type: String, required: true },
@@ -112,6 +115,11 @@ const AgencySchema = new Schema<IAgency>(
     },
     flowChart: {
       flowChart: { type: String },
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'approved', 'rejected'],
+      default: 'pending',
     },
   },
   { timestamps: true }

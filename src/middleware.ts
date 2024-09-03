@@ -17,6 +17,12 @@ export default clerkMiddleware((auth, req) => {
   const currentUrl = new URL(req.url)
   const isAccessingDashboard = currentUrl.pathname === '/home'
   const isApiRequest = currentUrl.pathname.startsWith('/api')
+  const isFastRefresh = req.url.includes('_rsc')
+
+  if (isFastRefresh) {
+    // Handle Fast Refresh requests
+    return NextResponse.next()
+  }
   console.log(userId)
   if(isApiRequest)  return NextResponse.next()
   // Prevent redirect loops when accessing the /agency/sign-in page
@@ -57,5 +63,5 @@ export default clerkMiddleware((auth, req) => {
 })
 
 export const config = {
-  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
+  matcher: ['/((?!.*\\..*|_next|_rsc).*)', '/', '/(api|trpc)(.*)'],
 }

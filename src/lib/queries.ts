@@ -5,6 +5,7 @@ import { User, IUser } from '@/models/user.model'
 import { currentUser } from '@clerk/nextjs/server'
 import { Agency, IAgency } from '@/models/agency.model'
 import { get } from 'http'
+import { QueryCache } from 'react-query'
 // Write a query to save the current user's profile from Clerk provider in MongoDB
 export const initUser = async (newUser: Partial<IUser>) => {
   const user = await currentUser()
@@ -29,24 +30,29 @@ export const initUser = async (newUser: Partial<IUser>) => {
     throw new Error('Error updating user')
   }
 }
+
+let userData: any
+
 export const getUser = async () => {
-  
+  if (userData) return userData
+
   try {
     const user = await currentUser()
     if (!user) return
     await connectDB()
-    const userData = await User.findOne({
+    let userData = await User.findOne({
       email: user.emailAddresses[0].emailAddress,
     })
       .lean()
       .exec()
-    return userData
+    const plainUser = JSON.parse(JSON.stringify(userData))
+    userData = plainUser
+    return plainUser
   } catch (error) {
     console.error('Error getting user:', error)
     throw new Error('Error getting user')
   }
 }
-
 export const upsertAgency = async (agencyData: Partial<IAgency>) => {
   try {
     console.log('inside the upsertdata', agencyData)
@@ -198,9 +204,24 @@ export const getAgencies = async () => {
   try {
     await connectDB()
     const agencies = await Agency.find({}).populate('user').lean().exec()
-    return agencies
+    const plainAgencies = JSON.parse(JSON.stringify(agencies))
+    return plainAgencies
   } catch (error) {
     console.error('Error getting agencies:', error)
     throw new Error('Error getting agencies')
+  }
+}
+export const getAgency = async (id: string) => {
+  try {
+    await connectDB()
+    const agency = await Agency.findOne({ _id: id })
+      .populate('user')
+      .lean()
+      .exec()
+    const plainAgency = JSON.parse(JSON.stringify(agency))
+    return plainAgency
+  } catch (error) {
+    console.error('Error getting agency:', error)
+    throw new Error('Error getting agency')
   }
 }

@@ -7,6 +7,7 @@ import { Agency, IAgency } from '@/models/agency.model'
 import { get } from 'http'
 import { QueryCache } from 'react-query'
 import { UTApi } from 'uploadthing/server'
+import { utapi } from '@/server/uploadthing'
 // Write a query to save the current user's profile from Clerk provider in MongoDB
 export const initUser = async (newUser: Partial<IUser>) => {
   const user = await currentUser()
@@ -325,9 +326,14 @@ export const updateDocument = async (
   }
 }
 
+
+
 const deleteFile = async ({ fileKey }: { fileKey: string | string[] }) => {
   try {
-    const result = await UTApi.deleteFiles(fileKey)
+    const result = await utapi.deleteFiles(
+      fileKey
+    )
+    console.log(result, 'result')
     return result
   } catch (error) {
     console.error('Error deleting file:', error)

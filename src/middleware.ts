@@ -8,58 +8,50 @@ const isPublicRoute = createRouteMatcher([
   '/api',
   '/site',
   '/api/uploadthing',
-  '/admin',
 ])
 const isPublicApiRoute = createRouteMatcher(['/api/videos', '/api/uploadthing'])
 
-export default clerkMiddleware((auth, req) => {
-  const { userId } = auth()
-  const currentUrl = new URL(req.url)
-  const isAccessingDashboard = currentUrl.pathname === '/home'
-  const isApiRequest = currentUrl.pathname.startsWith('/api')
-  const isFastRefresh = req.url.includes('_rsc')
+export default clerkMiddleware(async (auth, req) => {
+  try {
+    const { userId } = await auth()
+    const currentUrl = new URL(req.url)
+    const isFastRefresh = req.url.includes('_rsc')
 
-  if (isFastRefresh) {
-    // Handle Fast Refresh requests
-    return NextResponse.next()
-  }
-  console.log(userId)
-  if(isApiRequest)  return NextResponse.next()
-  // Prevent redirect loops when accessing the /agency/sign-in page
-  if (
-    currentUrl.pathname === '/agency/sign-in' ||
-    currentUrl.pathname === '/agency/sign-up'
-  ) {
-    return NextResponse.next() // Allow the user to access the sign-in page
-  }
-
-  // If user is logged in and accessing a public route but not the dashboard
-  if (userId && isPublicRoute(req) && !isAccessingDashboard) {
-    return NextResponse.redirect(new URL('/home', req.url))
-  }
-
-  // If not logged in
-  if (!userId) {
-    // If user is trying to access a protected route
-    if (!isPublicRoute(req) && !isPublicApiRoute(req)) {
-      return NextResponse.redirect(new URL('/sign-in', req.url))
+    if (isFastRefresh) {
+      // Handle Fast Refresh requests
+      return NextResponse.next()
     }
 
-    // If the request is for a protected API and the user is not logged in
-    if (isApiRequest && !isPublicApiRoute(req)) {
-      return NextResponse.redirect(new URL('/sign-in', req.url))
+    if (currentUrl.pathname.startsWith('/api')) {
+      // Allow API requests to proceed
+      return NextResponse.next()
     }
 
-    // If the user is trying to access sign-in or sign-up page
     if (
-      currentUrl.pathname === '/sign-in' ||
-      currentUrl.pathname === '/sign-up'
+      currentUrl.pathname === '/agency/sign-in' ||
+      currentUrl.pathname === '/agency/sign-up'
     ) {
+      // Allow the user to access the sign-in page
+      return NextResponse.next()
+    }
+
+    if (userId && isPublicRoute(req) && currentUrl.pathname !== '/home') {
+      // Redirect the user to the dashboard if they are logged in and accessing a public route
+      return NextResponse.redirect(new URL('/home', req.url))
+    }
+
+    if (!userId && !isPublicRoute(req) && !isPublicApiRoute(req)) {
+      // Redirect the user to the sign-in page if they are not logged in and accessing a protected route
       return NextResponse.redirect(new URL('/agency/sign-in', req.url))
     }
-  }
 
-  return NextResponse.next()
+    // Allow the request to proceed
+    return NextResponse.next()
+  } catch (error) {
+    console.error(error)
+    // Handle errors and prevent the server from crashing
+    return NextResponse.error()
+  }
 })
 
 export const config = {

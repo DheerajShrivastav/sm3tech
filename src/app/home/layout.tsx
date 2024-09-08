@@ -34,7 +34,6 @@ export default function RootLayout({
                 {/* <agency/> */}
               </PageWrapper>
             </MarginWidthWrapper>
-            {children}
           </main>
         </div>
       </body>

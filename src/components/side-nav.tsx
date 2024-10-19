@@ -1,43 +1,35 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SIDENAV_ITEMS } from "@/constants";
 import { SideNavItem } from "@/types";
 import { Icon } from "@iconify/react";
-import useScroll from "@/hooks/use-scroll";
 
 const SideNav = () => {
-  const scrolled = useScroll(5);
-
   return (
     <div
-      className={`md:w-85 bg-white fixed top-0 left-0 h-full border-r transition-all ${
-        scrolled
-          ? "bg-white/75 backdrop-blur-lg border-zinc-200"
-          : "bg-white border-zinc-200"
-      } overflow-y-auto`}
+      className={`md:w-72 w-20 fixed top-0 left-0 h-full font-sora bg-white border-r border-gray-200 shadow-lg z-50 overflow-y-auto transition-all`}
     >
-      <div className="flex flex-col space-y-6 w-full">
+      <div className="flex flex-col space-y-6 w-full p-4">
         <Link
           href="/"
-          className="flex flex-row space-x-3 items-center justify-center md:justify-start md:px-6 border-b border-zinc-200 h-12 w-full"
+          className="flex flex-row space-x-3 items-center justify-center md:justify-start md:px-6 border-b border-gray-300 h-12 w-full"
         >
-          <span className="h-7 w-7 bg-zinc-300 rounded-lg " />
-          <span className="font-bold text-xl hidden md:flex">SM3Tech</span>
+          <span className="font-bold text-xl text-[#1d4ed8] hidden md:flex">
+            S23Tech
+          </span>
         </Link>
 
-        <div className="flex flex-col space-y-2 md:px-6">
-          {SIDENAV_ITEMS.map((item, idx) => {
-            return <MenuItem key={idx} item={item} />;
-          })}
+        <div className="flex flex-col space-y-2 md:px-4">
+          {SIDENAV_ITEMS.map((item, idx) => (
+            <MenuItem key={idx} item={item} />
+          ))}
         </div>
       </div>
     </div>
   );
 };
-
-export default SideNav;
 
 const MenuItem = ({ item }: { item: SideNavItem }) => {
   const pathname = usePathname();
@@ -53,16 +45,18 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
         <>
           <button
             onClick={toggleSubMenu}
-            className={`flex flex-row items-center p-2 rounded-lg hover-bg-zinc-100 w-full justify-between hover:bg-zinc-100 ${
-              pathname.includes(item.path) ? "bg-zinc-100" : ""
+            className={`flex flex-row items-center w-full p-2 rounded-lg hover:bg-[#dbeafe] transition-colors duration-200 justify-between ${
+              pathname.includes(item.path) ? "bg-[#93c5fd] shadow-md" : "bg-[#f0f9ff]"
             }`}
           >
-            <div className="flex flex-row space-x-4 items-center">
+            <div className="flex flex-row space-x-4 items-center ">
               {item.icon}
-              <span className="font-semibold text-xl  flex  ">{item.title}</span>
+              <span className="font-semibold text-lg text-[#1d4ed8] flex">
+                {item.title}
+              </span>
             </div>
-            <div className={`${subMenuOpen ? "rotate-180" : ""} flex`}>
-              <Icon icon="lucide:chevron-down" width="24" height="24" />
+            <div className={`${subMenuOpen ? "rotate-180" : ""} flex `}>
+              <Icon icon="lucide:chevron-down" width="24" height="24" color="#1d4ed8" />
             </div>
           </button>
 
@@ -77,14 +71,18 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
       ) : (
         <Link
           href={item.path}
-          className={`flex flex-row space-x-4 items-center p-2 rounded-lg hover:bg-zinc-100 ${
-            item.path === pathname ? "bg-zinc-100" : ""
+          className={`flex flex-row space-x-4 items-center p-2 rounded-lg hover:bg-[#dbeafe] transition-colors duration-200 ${
+            item.path === pathname ? "bg-[#93c5fd] shadow-md" : "bg-[#f0f9ff]"
           }`}
         >
           {item.icon}
-          <span className="font-semibold text-xl flex">{item.title}</span>
+          <span className="font-semibold text-lg text-[#1d4ed8] flex">
+            {item.title}
+          </span>
         </Link>
       )}
     </div>
   );
 };
+
+export default SideNav;

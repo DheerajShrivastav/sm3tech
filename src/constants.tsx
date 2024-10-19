@@ -4,13 +4,13 @@ import { SideNavItem } from "./types.jsx";
 export const SIDENAV_ITEMS: SideNavItem[] = [
   {
     title: "Home",
-    path: "/home",
-    icon: <Icon icon="lucide:home" width="24" height="24" />,
+    path: "/",
+    icon: <Icon icon="lucide:home" width="24" height="24" color="black" />,
   },
   {
-    title: "services",
+    title: "Services",
     path: "/services",
-    icon: <Icon icon="lucide:folder" width="24" height="24" />,
+    icon: <Icon icon="lucide:folder" width="24" height="24" color="black" />,
     submenu: true,
     subMenuItems: [
       {
@@ -23,7 +23,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
         submenu: true,
         subMenuItems: [
           {
-            title: "Plan approval",
+            title: "Plan Approval",
             path: "/services/factory-act/plan-approval",
           },
           {
@@ -35,15 +35,15 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
             path: "/services/factory-act/factory-license",
           },
           {
-            title: "Safety Audit report",
+            title: "Safety Audit Report",
             path: "/services/factory-act/safety-audit-report",
           },
           {
-            title: "Testing & calibration",
+            title: "Testing & Calibration",
             path: "/services/factory-act/testing-calibration",
           },
           {
-            title: "SEP plant Fitness",
+            title: "SEP Plant Fitness",
             path: "/services/factory-act/sep-plant-fitness",
           },
         ],
@@ -58,15 +58,15 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
             path: "/services/mpcb/consent-to-establish",
           },
           {
-            title: "Consent To Operate",
+            title: "Consent to Operate",
             path: "/services/mpcb/consent-to-operate",
           },
           {
-            title: "Conent condition Compliance Report",
+            title: "Consent Condition Compliance Report",
             path: "/services/mpcb/compliance-report",
           },
           {
-            title: "JVS sampling & analysis report",
+            title: "JVS Sampling & Analysis Report",
             path: "/services/mpcb/jvs-sampling-report",
           },
           {
@@ -78,18 +78,16 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
             path: "/services/mpcb/form-iv",
           },
           {
-            title: "Carbon Foot Print Study report",
+            title: "Carbon Footprint Study Report",
             path: "/services/mpcb/carbon-footprint-study",
           },
         ],
       },
     ],
   },
-  
   {
-    title: "inspection-view",
-    path: "home/inspection-view",
-    icon: <Icon icon="lucide:mail" width="24" height="24" />,
+    title: "Inspection View",
+    path: "/home/inspection-view", // Added leading slash for consistency
+    icon: <Icon icon="lucide:mail" width="24" height="24" color="black" />,
   },
-  
 ];

@@ -14,136 +14,105 @@ import {
 import { Button } from '../ui/button'
 
 type Props = {
-    id : string
+    id: string
 }
 
-const UserView = ({id}: Props) => {
-    const [agency, setAgency] = React.useState<IAgency | null>(null)
-    React.useEffect(() => {
-        const fetchAgency = async () => {
-            const response = await getAgency(id)
-            setAgency(response)
-        }
-        fetchAgency()
-    }, [id])
+const UserView = ({ id }: Props) => {
+  const [agency, setAgency] = React.useState<IAgency | null>(null)
+
+  React.useEffect(() => {
+    const fetchAgency = async () => {
+      const response = await getAgency(id)
+      setAgency(response)
+    }
+    fetchAgency()
+  }, [id])
+
   return (
-    <div>
-      {/* <div className="max-w-md mx-auto p-4 bg-gray-100 shadow-md rounded"> */}
-        <div>
-        <h2 className="text-lg font-bold mb-4">Agency Documents</h2>
-        <Table className="w-full border-collapse">
-          <TableCaption>A list of your uploaded Documents</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead >Document Type</TableHead>
-              <TableHead >Document Name</TableHead>
-              <TableHead >View</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell className=" font-medium">Agency Registration</TableCell>
-              <TableCell >
-                {agency?.occupierDocuments.name}
-              </TableCell>
-              <TableCell className="p-2">
-                <Button >
-                  <a href={agency?.occupierDocuments.photo} target="_blank">
-                    View Photo
-                  </a>
+    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg font-sora">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Agency Documents</h2>
+      
+      <Table className="w-full border border-gray-200 rounded-lg shadow-sm">
+        <TableCaption className="text-left text-gray-600 font-light">A list of your uploaded Documents</TableCaption>
+        
+        <TableHeader>
+          <TableRow className="bg-gray-100">
+            <TableHead className="py-3 px-4 font-medium text-gray-700">Document Type</TableHead>
+            <TableHead className="py-3 px-4 font-medium text-gray-700">Document Name</TableHead>
+            <TableHead className="py-3 px-4 font-medium text-gray-700 text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+
+        <TableBody>
+          <TableRow className="border-t">
+            <TableCell className="py-4 px-4 font-medium text-gray-900">Agency Registration</TableCell>
+            <TableCell className="py-4 px-4 text-gray-600">
+              {agency?.occupierDocuments.name || 'N/A'}
+            </TableCell>
+            <TableCell className="py-4 px-4 text-right">
+              <Button className="mr-2 bg-blue-600 text-white hover:bg-indigo-700 rounded-lg">
+                <a href={agency?.occupierDocuments.photo} target="_blank" rel="noopener noreferrer">View Photo</a>
+              </Button>
+              <Button className="bg-blue-600 text-white hover:bg-blue-700 rounded-lg">
+                <a href={agency?.occupierDocuments.signature} target="_blank" rel="noopener noreferrer">View Signature</a>
+              </Button>
+            </TableCell>
+          </TableRow>
+
+          <TableRow className="border-t">
+            <TableCell className="py-4 px-4 font-medium text-gray-900">Occupier Documents</TableCell>
+            <TableCell className="py-4 px-4 text-gray-600">
+              {agency?.occupierDocuments.name || 'N/A'}
+            </TableCell>
+            <TableCell className="py-4 px-4 text-right">
+              <Button className="mr-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg">
+                <a href={agency?.occupierDocuments.photo} target="_blank" rel="noopener noreferrer">View Photo</a>
+              </Button>
+              <Button className="bg-blue-600 text-white hover:bg-blue-700 rounded-lg">
+                <a href={agency?.occupierDocuments.signature} target="_blank" rel="noopener noreferrer">View Signature</a>
+              </Button>
+            </TableCell>
+          </TableRow>
+
+          <TableRow className="border-t">
+            <TableCell className="py-4 px-4 font-medium text-gray-900">Applicant ID Proof</TableCell>
+            <TableCell className="py-4 px-4 text-gray-600">
+              {agency?.applicantIdProof.electionId ? 'Election ID' : 'Driving License'}
+              <br />
+              {agency?.applicantIdProof.aadharCard ? 'Aadhar Card' : 'Passport'}
+              <br />
+              {agency?.applicantIdProof.panCard && 'Pan Card'}
+            </TableCell>
+            <TableCell className="py-4 px-4 text-right flex flex-col md:flex-row md:justify-end">
+              {agency?.applicantIdProof.electionId ? (
+                <Button className="mr-2 mb-2 md:mb-0 bg-blue-600 text-white hover:bg-blue-700 rounded-lg">
+                  <a href={agency.applicantIdProof.electionId} target="_blank" rel="noopener noreferrer">View Election ID</a>
                 </Button>
-                <Button >
-                  <a href={agency?.occupierDocuments.signature} target="_blank">
-                    View Signature
-                  </a>
+              ) : (
+                <Button className="mr-2 mb-2 md:mb-0 bg-blue-600 text-white hover:bg-blue-700 rounded-lg">
+                  <a href={agency?.applicantIdProof.drivingLicense} target="_blank" rel="noopener noreferrer">View Driving License</a>
                 </Button>
-              </TableCell>
-            </TableRow>
-          <TableRow>
-              <TableCell className=" font-medium">Occupier Documents</TableCell>
-              <TableCell >{agency?.occupierDocuments.name}</TableCell>
-              <TableCell >
-                <Button >
-                  <a href={agency?.occupierDocuments.photo} target="_blank">
-                    View Photo
-                  </a>
+              )}
+
+              {agency?.applicantIdProof.aadharCard ? (
+                <Button className="mr-2 mb-2 md:mb-0 bg-blue-600 text-white hover:bg-blue-700 rounded-lg">
+                  <a href={agency?.applicantIdProof.aadharCard} target="_blank" rel="noopener noreferrer">View Aadhar Card</a>
                 </Button>
-                <Button >
-                  <a href={agency?.occupierDocuments.signature} target="_blank">
-                    View Signature
-                  </a>
+              ) : (
+                <Button className="mr-2 mb-2 md:mb-0 bg-blue-600 text-white hover:bg-blue-700 rounded-lg">
+                  <a href={agency?.applicantIdProof.passport} target="_blank" rel="noopener noreferrer">View Passport</a>
                 </Button>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className=" font-medium">Applicant ID Proof</TableCell>
-              <TableCell >
-                {agency?.applicantIdProof.electionId ? (
-                  <span>Election ID</span>
-                ) : (
-                  <span>Driving License</span>
-                )}
-                {agency?.applicantIdProof.aadharCard ? (
-                  <span>Aadhar Card</span>
-                ) : (
-                  <span>Passport</span>
-                )}
-                {agency?.applicantIdProof.panCard ? (
-                  <span>Pan Card</span>
-                ) : (
-                  <span></span>
-                )}
-              </TableCell>
-              <TableCell >
-                {agency?.applicantIdProof.electionId ? (
-                  <Button >
-                    <a
-                      href={agency.applicantIdProof.electionId}
-                      target="_blank"
-                    >
-                      View Election ID
-                    </a>
-                  </Button>
-                ) : (
-                  <Button >
-                    <a
-                      href={agency?.applicantIdProof.drivingLicense}
-                      target="_blank"
-                    >
-                      View Driving License
-                    </a>
-                  </Button>
-                )}
-                {agency?.applicantIdProof.aadharCard ? (
-                  <Button >
-                    <a
-                      href={agency?.applicantIdProof.aadharCard}
-                      target="_blank"
-                    >
-                      View Aadhar Card
-                    </a>
-                  </Button>
-                ) : (
-                  <Button >
-                    <a href={agency?.applicantIdProof.passport} target="_blank">
-                      View Passport
-                    </a>
-                  </Button>
-                )}
-                {agency?.applicantIdProof.panCard ? (
-                  <Button >
-                    <a href={agency?.applicantIdProof.panCard} target="_blank">
-                      View Pan Card
-                    </a>
-                  </Button>
-                ) : (
-                  <span></span>
-                )}
-              </TableCell>
-            </TableRow> 
-          </TableBody>
-        </Table>
-      </div>
+              )}
+
+              {agency?.applicantIdProof.panCard && (
+                <Button className="bg-blue-600 text-white hover:bg-blue-700 rounded-lg">
+                  <a href={agency?.applicantIdProof.panCard} target="_blank" rel="noopener noreferrer">View Pan Card</a>
+                </Button>
+              )}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </div>
   )
 }

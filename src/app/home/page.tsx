@@ -13,7 +13,6 @@ const Home = async(props: Props) => {
       {user}
       {userdata}
       <UserButton/>
-      <ModeToggle/>
       <AgencyDetails/>
     </div>
   )

@@ -4,7 +4,8 @@ import { usePathname } from "next/navigation";
 import AgencyDetails from "@/components/forms/agency-details";
 import SideNav from "@/components/side-nav";
 
-export function PlanApproval() {
+// Fix: Convert the component to a default export
+const PlanApproval = () => {
   const pathname = usePathname(); // Get current path
 
   return (
@@ -30,6 +31,7 @@ export function PlanApproval() {
       </div>
     </div>
   );
-}
+};
+
 
 export default PlanApproval;

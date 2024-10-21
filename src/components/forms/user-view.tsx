@@ -65,7 +65,7 @@ const UserView = ({ id }: Props) => {
               {agency?.occupierDocuments.name || 'N/A'}
             </TableCell>
             <TableCell className="py-4 px-4 text-right">
-              <Button className="mr-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg">
+              <Button className="mr-2 bg-blue-600 text-white hover:bg-indigo-700 rounded-lg">
                 <a href={agency?.occupierDocuments.photo} target="_blank" rel="noopener noreferrer">View Photo</a>
               </Button>
               <Button className="bg-blue-600 text-white hover:bg-blue-700 rounded-lg">

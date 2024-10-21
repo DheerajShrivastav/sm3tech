@@ -38,7 +38,7 @@ export function Dashboard() {
        
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-white">
           <div className="flex items-center">
-            <h1 className="text-3xl text-blue-800 font-semibold ">Welcome To Your Dashboard</h1>
+            <h1 className=" text-lg lg:text-3xl text-blue-950 font-semibold ">Welcome To Your Dashboard</h1>
           </div>
           <div className="">
             <AgencyDetails />

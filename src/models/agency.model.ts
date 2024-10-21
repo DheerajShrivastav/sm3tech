@@ -4,6 +4,8 @@ import mongoose, { Document, model, Schema } from 'mongoose'
 export interface IAgency extends Document {
   user : typeof mongoose.Schema.ObjectId
   occupierDocuments: {
+    phone?: string
+    address?: string
     name: string
     photo: string
     signature: string
@@ -67,6 +69,8 @@ const AgencySchema = new Schema<IAgency>(
       name: { type: String, required: true },
       photo: { type: String, required: true },
       signature: { type: String, required: true },
+      phone: { type: String, required: true },
+      address: { type: String, required: true },
     },
     applicantIdProof: {
       electionId: { type: String },

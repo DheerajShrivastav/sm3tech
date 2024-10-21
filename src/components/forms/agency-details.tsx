@@ -196,13 +196,14 @@ const AgencyDetails = ({ data }: Props) => {
       })
     }
   }
-
   return (
     <AlertDialog>
       <Card className="w-full bg-white shadow-lg">
         <CardHeader>
           <CardTitle className="text-blue-800">Agency Information</CardTitle>
-          <CardDescription className="text-blue-600">Lets create an agency for your business.</CardDescription>
+          <CardDescription className="text-blue-600">
+            Lets create an agency for your business.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -215,7 +216,11 @@ const AgencyDetails = ({ data }: Props) => {
                   <FormItem className="flex flex-col md:flex-row md:gap-4">
                     <FormLabel className="text-blue-800">Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Your name" {...field} className="bg-white text-black" />
+                      <Input
+                        placeholder="Your name"
+                        {...field}
+                        className="bg-white text-black"
+                      />
                     </FormControl>
                     <FormMessage className="text-red-600" />
                   </FormItem>
@@ -223,7 +228,7 @@ const AgencyDetails = ({ data }: Props) => {
               />
   
               {/* Occupier Documents */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <FormField
                   control={form.control}
                   name="occupierDocuments.photo"
@@ -231,7 +236,11 @@ const AgencyDetails = ({ data }: Props) => {
                     <FormItem>
                       <FormLabel className="text-blue-800">Occupier Photo</FormLabel>
                       <FormControl>
-                        <FileUpload apiEndpoint="imageUploader" onChange={field.onChange} value={field.value} />
+                        <FileUpload
+                          apiEndpoint="imageUploader"
+                          onChange={field.onChange}
+                          value={field.value}
+                        />
                       </FormControl>
                       <FormMessage className="text-red-600" />
                     </FormItem>
@@ -244,16 +253,16 @@ const AgencyDetails = ({ data }: Props) => {
                     <FormItem>
                       <FormLabel className="text-blue-800">Occupier Signature</FormLabel>
                       <FormControl>
-                        <FileUpload apiEndpoint="imageUploader" onChange={field.onChange} value={field.value} />
+                        <FileUpload
+                          apiEndpoint="imageUploader"
+                          onChange={field.onChange}
+                          value={field.value}
+                        />
                       </FormControl>
                       <FormMessage className="text-red-600" />
                     </FormItem>
                   )}
                 />
-              </div>
-  
-              {/* ID Proof */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="applicantIdProof.electionId"
@@ -261,7 +270,11 @@ const AgencyDetails = ({ data }: Props) => {
                     <FormItem>
                       <FormLabel className="text-blue-800">Election ID</FormLabel>
                       <FormControl>
-                        <FileUpload apiEndpoint="imageUploader" onChange={field.onChange} value={field.value} />
+                        <FileUpload
+                          apiEndpoint="imageUploader"
+                          onChange={field.onChange}
+                          value={field.value}
+                        />
                       </FormControl>
                       <FormMessage className="text-red-600" />
                     </FormItem>
@@ -274,12 +287,20 @@ const AgencyDetails = ({ data }: Props) => {
                     <FormItem>
                       <FormLabel className="text-blue-800">Driving License</FormLabel>
                       <FormControl>
-                        <FileUpload apiEndpoint="imageUploader" onChange={field.onChange} value={field.value} />
+                        <FileUpload
+                          apiEndpoint="imageUploader"
+                          onChange={field.onChange}
+                          value={field.value}
+                        />
                       </FormControl>
                       <FormMessage className="text-red-600" />
                     </FormItem>
                   )}
                 />
+              </div>
+  
+              {/* ID Proof */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <FormField
                   control={form.control}
                   name="applicantIdProof.aadharCard"
@@ -287,7 +308,11 @@ const AgencyDetails = ({ data }: Props) => {
                     <FormItem>
                       <FormLabel className="text-blue-800">Aadhar Card</FormLabel>
                       <FormControl>
-                        <FileUpload apiEndpoint="imageUploader" onChange={field.onChange} value={field.value} />
+                        <FileUpload
+                          apiEndpoint="imageUploader"
+                          onChange={field.onChange}
+                          value={field.value}
+                        />
                       </FormControl>
                       <FormMessage className="text-red-600" />
                     </FormItem>
@@ -300,7 +325,11 @@ const AgencyDetails = ({ data }: Props) => {
                     <FormItem>
                       <FormLabel className="text-blue-800">Passport</FormLabel>
                       <FormControl>
-                        <FileUpload apiEndpoint="imageUploader" onChange={field.onChange} value={field.value} />
+                        <FileUpload
+                          apiEndpoint="imageUploader"
+                          onChange={field.onChange}
+                          value={field.value}
+                        />
                       </FormControl>
                       <FormMessage className="text-red-600" />
                     </FormItem>
@@ -313,16 +342,16 @@ const AgencyDetails = ({ data }: Props) => {
                     <FormItem>
                       <FormLabel className="text-blue-800">Pan Card</FormLabel>
                       <FormControl>
-                        <FileUpload apiEndpoint="imageUploader" onChange={field.onChange} value={field.value} />
+                        <FileUpload
+                          apiEndpoint="imageUploader"
+                          onChange={field.onChange}
+                          value={field.value}
+                        />
                       </FormControl>
                       <FormMessage className="text-red-600" />
                     </FormItem>
                   )}
                 />
-              </div>
-  
-              {/* Previous Factory License */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="previousFactoryLicense.previousFactoryLicense"
@@ -330,133 +359,11 @@ const AgencyDetails = ({ data }: Props) => {
                     <FormItem>
                       <FormLabel className="text-blue-800">Previous Factory License</FormLabel>
                       <FormControl>
-                        <FileUpload apiEndpoint="pdfUploader" onChange={field.onChange} value={field.value} />
-                      </FormControl>
-                      <FormMessage className="text-red-600" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="previousFactoryLicense.planApprovalLetter"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-blue-800">Plan Approval Letter</FormLabel>
-                      <FormControl>
-                        <FileUpload apiEndpoint="pdfUploader" onChange={field.onChange} value={field.value} />
-                      </FormControl>
-                      <FormMessage className="text-red-600" />
-                    </FormItem>
-                  )}
-                />
-              </div>
-  
-              {/* Private Limited Company */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="privateLimitedCompany.listOfDirectors"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-blue-800">List of Directors</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter the Names" {...field} className="bg-white text-black" />
-                      </FormControl>
-                      <FormMessage className="text-red-600" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="privateLimitedCompany.moa"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-blue-800">MOA</FormLabel>
-                      <FormControl>
-                        <FileUpload apiEndpoint="pdfUploader" onChange={field.onChange} value={field.value} />
-                      </FormControl>
-                      <FormMessage className="text-red-600" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="privateLimitedCompany.boardResolution"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-blue-800">Board Resolution</FormLabel>
-                      <FormControl>
-                        <FileUpload apiEndpoint="pdfUploader" onChange={field.onChange} value={field.value} />
-                      </FormControl>
-                      <FormMessage className="text-red-600" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="privateLimitedCompany.form32"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-blue-800">Form 32</FormLabel>
-                      <FormControl>
-                        <FileUpload apiEndpoint="pdfUploader" onChange={field.onChange} value={field.value} />
-                      </FormControl>
-                      <FormMessage className="text-red-600" />
-                    </FormItem>
-                  )}
-                />
-              </div>
-  
-              {/* Other Documents */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Ownership Documents */}
-                <FormField
-                  control={form.control}
-                  name="ownershipDocuments.leaveAndLicenseAgreement"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-blue-800">Leave and License Agreement</FormLabel>
-                      <FormControl>
-                        <FileUpload apiEndpoint="pdfUploader" onChange={field.onChange} value={field.value} />
-                      </FormControl>
-                      <FormMessage className="text-red-600" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="ownershipDocuments.midcAllotmentLetter"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-blue-800">MIDC Allotment Letter</FormLabel>
-                      <FormControl>
-                        <FileUpload apiEndpoint="pdfUploader" onChange={field.onChange} value={field.value} />
-                      </FormControl>
-                      <FormMessage className="text-red-600" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="ownershipDocuments.surveyNumberDocuments"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-blue-800">Survey Number Documents</FormLabel>
-                      <FormControl>
-                        <FileUpload apiEndpoint="pdfUploader" onChange={field.onChange} value={field.value} />
-                      </FormControl>
-                      <FormMessage className="text-red-600" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="ownershipDocuments.stampDutyReceipt"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-blue-800">Stamp Duty Receipt</FormLabel>
-                      <FormControl>
-                        <FileUpload apiEndpoint="pdfUploader" onChange={field.onChange} value={field.value} />
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value}
+                        />
                       </FormControl>
                       <FormMessage className="text-red-600" />
                     </FormItem>
@@ -465,7 +372,9 @@ const AgencyDetails = ({ data }: Props) => {
               </div>
   
               {/* Submit Button */}
-              <Button className="w-full mt-6 bg-blue-600 text-white hover:bg-blue-700">Create Agency</Button>
+              <Button className="w-full mt-6 bg-blue-600 text-white hover:bg-blue-700">
+                Create Agency
+              </Button>
             </form>
           </Form>
         </CardContent>

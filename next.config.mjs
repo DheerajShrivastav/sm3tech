@@ -5,9 +5,9 @@ const nextConfig = {
       'uploadthing.com',
       'utfs.io',
       'img.clerk.com',
-      
     ],
   },
   reactStrictMode: true,
 }
+
 export default nextConfig;

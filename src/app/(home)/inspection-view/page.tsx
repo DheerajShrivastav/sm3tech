@@ -1,14 +1,50 @@
-import React, { memo } from 'react'
-import AdminView from '../../../components/forms/admin-view'
-import UserView from '@/components/forms/user-view'
-import { getUser } from '@/lib/queries'
+"use client"
 
-// eslint-disable-next-line react/display-name
-const page = memo(async () => {
-  let id = '66ce17fb68cfe86ae916886b'
-  let user = await getUser()
-  let role = user?.role
-  return <div className='font-sora'>{role === 'Admin' ? <AdminView /> : <UserView id={id} />}</div>
-})
+import React, { memo, useEffect, useState } from 'react';
+import AdminView from '../../../components/forms/admin-view';
+import UserView from '@/components/forms/user-view';
+import { getUser } from '@/lib/queries';
 
-export default page
+// Define the User type
+interface User {
+  role: 'Admin' | 'User'; // Adjust based on your actual roles
+  // Add any other properties that your user object may have
+}
+
+const Page = memo(() => {
+  const [user, setUser] = useState<User | null>(null); // Use the User type
+  const [loading, setLoading] = useState(true);
+  const id = '66ce17fb68cfe86ae916886b';
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const fetchedUser = await getUser();
+        setUser(fetchedUser);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>; // Customize this loading state as needed
+  }
+
+  const role = user?.role; // TypeScript knows user can be null
+
+  return (
+    <div className='font-sora'>
+      {role === 'Admin' ? <AdminView /> : <UserView id={id} />}
+    </div>
+  );
+});
+
+// Set display name for the memoized component
+Page.displayName = 'Page';
+
+export default Page;

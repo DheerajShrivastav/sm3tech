@@ -20,7 +20,7 @@ export default withUt ({
     extend: {
 
       fontFamily: {
-        sora: ['Sora', 'sans-serif'], 
+        sora: ['Sora', 'sans-serif'],
       },
 
       colors: {

@@ -12,7 +12,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <Head>
-          <title>S23 Tech</title> {/* Add the page title here */}
+          <title>SM3 Tech</title> {/* Add the page title here */}
           {/* Other meta tags can also go here */}
         </Head>
         <body>

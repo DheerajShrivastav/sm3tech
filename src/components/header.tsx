@@ -8,6 +8,7 @@ import { useSelectedLayoutSegment } from "next/navigation";
 // import useScroll from "@/hooks/use-scroll";
 import useScroll from "@/hooks/use-scroll";
 import { cn } from "@/lib/utils";
+import { UserButton } from "@clerk/nextjs";
 
 const Header = () => {
   const scrolled = useScroll(5);
@@ -36,7 +37,7 @@ const Header = () => {
 
         <div className="hidden md:block">
           <div className="h-8 w-8 rounded-full bg-zinc-300 flex items-center justify-center text-center">
-            <span className="font-semibold text-sm">HQ</span>
+            <UserButton/>
           </div>
         </div>
       </div>

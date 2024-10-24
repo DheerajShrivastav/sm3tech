@@ -22,19 +22,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={" bg-white  ${inter.className}"}>
-        <div className=" flex ">
+      <body className={`bg-white ${inter.className}`}>
+        <div className="flex min-h-screen"> {/* Set to full screen height */}
+          {/* Optional: SideNav component for navigation */}
           <SideNav />
-          <main className=" flex-1">
+          
+          <div className="flex-1 flex flex-col"> {/* Flex column for header and content */}
+            <Header />
             <MarginWidthWrapper>
-              <Header />
-              {/* <HeaderMobile /> */}
               <PageWrapper>
                 {children}
-                {/* <agency/> */}
               </PageWrapper>
             </MarginWidthWrapper>
-          </main>
+          </div>
         </div>
       </body>
     </html>

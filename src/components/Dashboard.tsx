@@ -15,7 +15,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { usePathname } from "next/navigation";
 import { SIDENAV_ITEMS } from "@/constants"; // Ensure SIDENAV_ITEMS contains your sidebar items
 import AgencyDetails from "./forms/agency-details";
-import SideNav from "./side-nav";
+
 
 // Define the structure of the MenuItem object
 interface MenuItemProps {
@@ -31,9 +31,7 @@ export function Dashboard() {
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] font-sora bg-white">
-      <div className="hidden border-r bg-white md:block">
-        <SideNav/>
-      </div>
+    
       <div className="flex flex-col">
        
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-white">

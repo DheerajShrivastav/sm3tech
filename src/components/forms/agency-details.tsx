@@ -197,8 +197,8 @@ const AgencyDetails = ({ data }: Props) => {
     }
   }
   return (
-    <AlertDialog>
-      <Card className="w-full bg-white shadow-lg">
+    <div className='w-full'>
+      <Card className="w-full bg-white shadow-lg ">
         <CardHeader>
           <CardTitle className="text-blue-800">Agency Information</CardTitle>
           <CardDescription className="text-blue-600">
@@ -379,7 +379,7 @@ const AgencyDetails = ({ data }: Props) => {
           </Form>
         </CardContent>
       </Card>
-    </AlertDialog>
+    </div>
   );
   
   

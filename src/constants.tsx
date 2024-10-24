@@ -87,7 +87,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   },
   {
     title: "Inspection View",
-    path: "/home/inspection-view", // Added leading slash for consistency
+    path: "/inspection-view", //
     icon: <Icon icon="lucide:mail" width="24" height="24" color="black" />,
   },
 ];

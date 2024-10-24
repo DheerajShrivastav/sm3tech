@@ -4,6 +4,7 @@ import React, { memo, useEffect, useState } from 'react';
 import AdminView from '../../../components/forms/admin-view';
 import UserView from '@/components/forms/user-view';
 import { getUser } from '@/lib/queries';
+import SideNav from '@/components/side-nav';
 
 // Define the User type
 interface User {
@@ -38,9 +39,18 @@ const Page = memo(() => {
   const role = user?.role; // TypeScript knows user can be null
 
   return (
-    <div className='font-sora'>
+    <div className="">
+    
+      {/* Main Content */}
+      <div className="flex-1 bg-gray-100 p-6 overflow-auto">
       {role === 'Admin' ? <AdminView /> : <UserView id={id} />}
+      </div>
     </div>
+
+
+
+
+
   );
 });
 

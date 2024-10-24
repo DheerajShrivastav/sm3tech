@@ -9,7 +9,7 @@ import { Icon } from "@iconify/react";
 const SideNav = () => {
   return (
     <div
-      className={`md:w-72 w-20 fixed top-0 left-0 h-full font-sora bg-white border-r border-gray-200 shadow-lg z-50 overflow-y-auto transition-all text-black`}
+      className={`md:w-72 w-20 h-auto font-sora bg-white border-r border-gray-200 shadow-lg z-50 transition-all text-black`}
     >
       <div className="flex flex-col space-y-6 w-full p-4">
         <Link

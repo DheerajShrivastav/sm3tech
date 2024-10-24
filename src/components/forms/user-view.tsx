@@ -1,120 +1,187 @@
-'use client'
-import { getAgency } from '@/lib/queries'
-import { IAgency } from '@/models/agency.model'
-import React from 'react'
+import React from 'react';
+import { getAgency } from '@/lib/queries';
+import { IAgency } from '@/models/agency.model';
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { ChevronDown, FileText, Image, Fingerprint, UserSquare2 } from "lucide-react";
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import { Button } from '../ui/button'
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 type Props = {
-    id: string
+  id: string;
 }
 
+// Decorative background component
+const DecorativeBg = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-200 to-blue-100 rounded-full transform translate-x-32 -translate-y-32 opacity-50" />
+    <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-sky-200 to-blue-100 rounded-full transform -translate-x-32 translate-y-32 opacity-50" />
+  </div>
+);
+
+const DocumentLink = ({ label, href }: { label: string; href?: string }) => (
+  <div className="flex justify-between items-center p-3 hover:bg-blue-50/80 rounded-md transition-colors backdrop-blur-sm">
+    <span className="text-blue-800 flex items-center gap-2">
+      <FileText className="w-4 h-4 text-blue-500" />
+      {label}
+    </span>
+    {href && (
+      <a 
+        href={href} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg"
+      >
+        View
+      </a>
+    )}
+  </div>
+);
+
+const DocumentSection = ({ 
+  title, 
+  icon: Icon,
+  documents,
+  maxHeight = "280px"
+}: { 
+  title: string;
+  icon: React.ElementType;
+  documents: React.ReactNode;
+  maxHeight?: string;
+}) => {
+  const [isOpen, setIsOpen] = React.useState(true);
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
+      <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg transition-all duration-300 group shadow-md hover:shadow-lg">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
+            <Icon className="w-5 h-5 text-white" />
+          </div>
+          <h3 className="text-lg font-medium text-white">{title}</h3>
+        </div>
+        <ChevronDown 
+          className={`w-5 h-5 text-white transition-transform duration-300 ${
+            isOpen ? 'transform rotate-180' : ''
+          }`}
+        />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="pt-2 pb-4">
+        <div className="border rounded-lg bg-white/80 backdrop-blur-sm shadow-sm">
+          <ScrollArea className={`w-full rounded-md`} style={{ maxHeight }}>
+            <div className="p-4 space-y-2">
+              {documents}
+            </div>
+          </ScrollArea>
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+};
+
 const UserView = ({ id }: Props) => {
-  const [agency, setAgency] = React.useState<IAgency | null>(null)
+  const [agency, setAgency] = React.useState<IAgency | null>(null);
 
   React.useEffect(() => {
     const fetchAgency = async () => {
-      const response = await getAgency(id)
-      setAgency(response)
-    }
-    fetchAgency()
-  }, [id])
+      const response = await getAgency(id);
+      setAgency(response);
+    };
+    fetchAgency();
+  }, [id]);
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg font-sora">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Agency Documents</h2>
+    <div className="flex flex-col font-sora rounded-xl bg-white/90 p-6 max-w-3xl mx-auto shadow-xl relative backdrop-blur-sm">
+      <DecorativeBg />
       
-      <Table className="w-full border border-gray-200 rounded-lg shadow-sm">
-        <TableCaption className="text-left text-gray-600 font-light">A list of your uploaded Documents</TableCaption>
+      <div className="relative z-10 space-y-4">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-lg">
+            <UserSquare2 className="w-6 h-6 text-white" />
+          </div>
+          <h2 className="text-2xl font-semibold text-blue-900">Agency Documents</h2>
+        </div>
         
-        <TableHeader>
-          <TableRow className="bg-gray-100">
-            <TableHead className="py-3 px-4 font-medium text-gray-700">Document Type</TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700">Document Name</TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700 text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
+        {/* Agency Registration Section */}
+        <DocumentSection 
+          title="Agency Registration" 
+          icon={FileText}
+          documents={
+            <>
+              <DocumentLink 
+                label={agency?.occupierDocuments.name || 'Photo Document'} 
+                href={agency?.occupierDocuments.photo} 
+              />
+              <DocumentLink 
+                label="Signature Document" 
+                href={agency?.occupierDocuments.signature} 
+              />
+            </>
+          }
+        />
 
-        <TableBody>
-          <TableRow className="border-t">
-            <TableCell className="py-4 px-4 font-medium text-gray-900">Agency Registration</TableCell>
-            <TableCell className="py-4 px-4 text-gray-600">
-              {agency?.occupierDocuments.name || 'N/A'}
-            </TableCell>
-            <TableCell className="py-4 px-4 text-right">
-              <Button className="mr-2 bg-blue-600 text-white hover:bg-indigo-700 rounded-lg">
-                <a href={agency?.occupierDocuments.photo} target="_blank" rel="noopener noreferrer">View Photo</a>
-              </Button>
-              <Button className="bg-blue-600 text-white hover:bg-blue-700 rounded-lg">
-                <a href={agency?.occupierDocuments.signature} target="_blank" rel="noopener noreferrer">View Signature</a>
-              </Button>
-            </TableCell>
-          </TableRow>
+        {/* Occupier Documents Section */}
+        <DocumentSection 
+          title="Occupier Documents" 
+          icon={Image}
+          documents={
+            <>
+              <DocumentLink 
+                label={agency?.occupierDocuments.name || 'Photo Document'} 
+                href={agency?.occupierDocuments.photo} 
+              />
+              <DocumentLink 
+                label="Signature Document" 
+                href={agency?.occupierDocuments.signature} 
+              />
+            </>
+          }
+        />
 
-          <TableRow className="border-t">
-            <TableCell className="py-4 px-4 font-medium text-gray-900">Occupier Documents</TableCell>
-            <TableCell className="py-4 px-4 text-gray-600">
-              {agency?.occupierDocuments.name || 'N/A'}
-            </TableCell>
-            <TableCell className="py-4 px-4 text-right">
-              <Button className="mr-2 bg-blue-600 text-white hover:bg-indigo-700 rounded-lg">
-                <a href={agency?.occupierDocuments.photo} target="_blank" rel="noopener noreferrer">View Photo</a>
-              </Button>
-              <Button className="bg-blue-600 text-white hover:bg-blue-700 rounded-lg">
-                <a href={agency?.occupierDocuments.signature} target="_blank" rel="noopener noreferrer">View Signature</a>
-              </Button>
-            </TableCell>
-          </TableRow>
-
-          <TableRow className="border-t">
-            <TableCell className="py-4 px-4 font-medium text-gray-900">Applicant ID Proof</TableCell>
-            <TableCell className="py-4 px-4 text-gray-600">
-              {agency?.applicantIdProof.electionId ? 'Election ID' : 'Driving License'}
-              <br />
-              {agency?.applicantIdProof.aadharCard ? 'Aadhar Card' : 'Passport'}
-              <br />
-              {agency?.applicantIdProof.panCard && 'Pan Card'}
-            </TableCell>
-            <TableCell className="py-4 px-4 text-right flex flex-col md:flex-row md:justify-end">
+        {/* Applicant ID Proof Section */}
+        <DocumentSection 
+          title="Applicant ID Proof" 
+          icon={Fingerprint}
+          documents={
+            <>
               {agency?.applicantIdProof.electionId ? (
-                <Button className="mr-2 mb-2 md:mb-0 bg-blue-600 text-white hover:bg-blue-700 rounded-lg">
-                  <a href={agency.applicantIdProof.electionId} target="_blank" rel="noopener noreferrer">View Election ID</a>
-                </Button>
+                <DocumentLink 
+                  label="Election ID" 
+                  href={agency.applicantIdProof.electionId} 
+                />
               ) : (
-                <Button className="mr-2 mb-2 md:mb-0 bg-blue-600 text-white hover:bg-blue-700 rounded-lg">
-                  <a href={agency?.applicantIdProof.drivingLicense} target="_blank" rel="noopener noreferrer">View Driving License</a>
-                </Button>
+                <DocumentLink 
+                  label="Driving License" 
+                  href={agency?.applicantIdProof.drivingLicense} 
+                />
               )}
-
+              
               {agency?.applicantIdProof.aadharCard ? (
-                <Button className="mr-2 mb-2 md:mb-0 bg-blue-600 text-white hover:bg-blue-700 rounded-lg">
-                  <a href={agency?.applicantIdProof.aadharCard} target="_blank" rel="noopener noreferrer">View Aadhar Card</a>
-                </Button>
+                <DocumentLink 
+                  label="Aadhar Card" 
+                  href={agency.applicantIdProof.aadharCard} 
+                />
               ) : (
-                <Button className="mr-2 mb-2 md:mb-0 bg-blue-600 text-white hover:bg-blue-700 rounded-lg">
-                  <a href={agency?.applicantIdProof.passport} target="_blank" rel="noopener noreferrer">View Passport</a>
-                </Button>
+                <DocumentLink 
+                  label="Passport" 
+                  href={agency?.applicantIdProof.passport} 
+                />
               )}
-
+              
               {agency?.applicantIdProof.panCard && (
-                <Button className="bg-blue-600 text-white hover:bg-blue-700 rounded-lg">
-                  <a href={agency?.applicantIdProof.panCard} target="_blank" rel="noopener noreferrer">View Pan Card</a>
-                </Button>
+                <DocumentLink 
+                  label="Pan Card" 
+                  href={agency?.applicantIdProof.panCard} 
+                />
               )}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+            </>
+          }
+        />
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default UserView
+export default UserView;

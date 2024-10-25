@@ -27,7 +27,7 @@ const DocumentLink = ({ label, href }: { label: string; href?: string }) => (
       <FileText className="w-4 h-4 text-blue-500" />
       {label}
     </span>
-    {href && (
+    {href ? (
       <a 
         href={href} 
         target="_blank" 
@@ -36,6 +36,8 @@ const DocumentLink = ({ label, href }: { label: string; href?: string }) => (
       >
         View
       </a>
+    ) : (
+      <span className="px-4 py-2 text-gray-500">Not Available</span>
     )}
   </div>
 );
@@ -166,7 +168,7 @@ const UserView = ({ id }: Props) => {
               ) : (
                 <DocumentLink 
                   label="Passport" 
-                  href={agency?.applicantIdProof.passport} 
+                  href={agency?.applicantIdProof.passport || undefined} 
                 />
               )}
               

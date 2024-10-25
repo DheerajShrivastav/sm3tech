@@ -5,12 +5,12 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   {
     title: "Home",
     path: "/",
-    icon: <Icon icon="lucide:home" width="24" height="24" color="black" />,
+    icon: <Icon icon="lucide:home" width="24" height="24" className="text-blue-600" />,
   },
   {
     title: "Services",
     path: "/services",
-    icon: <Icon icon="lucide:folder" width="24" height="24" color="black" />,
+    icon: <Icon icon="lucide:folder" width="24" height="24" className="text-blue-600" />,
     submenu: true,
     subMenuItems: [
       {
@@ -87,7 +87,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   },
   {
     title: "Inspection View",
-    path: "/inspection-view", //
-    icon: <Icon icon="lucide:mail" width="24" height="24" color="black" />,
+    path: "/inspection-view",
+    icon: <Icon icon="lucide:mail" width="24" height="24" className="text-blue-600" />,
   },
 ];

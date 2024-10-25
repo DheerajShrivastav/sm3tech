@@ -1,80 +1,111 @@
-'use client'
-import { FileIcon, X } from 'lucide-react'
-import Image from 'next/image'
-import React, { useState } from 'react'
-import { Button } from './ui/button'
-import { UploadDropzone } from '@/lib/uploadthing'
+import React, { FC, useRef, useState } from 'react';
+import { Upload, File, X } from 'lucide-react';
 
-type Props = {
-  apiEndpoint: 'imageUploader' | 'pdfUploader'
-  onChange: (url?: string) => void
-  value?: string
+interface FileUploadProps {
+  apiEndpoint: string;
+  onChange: (value: string) => void;
+  value: string;
+  accept?: string;
 }
 
-const FileUpload = ({ apiEndpoint, onChange, value }: Props) => {
-  const [loading, setLoading] = useState(false)
-  const type = value?.split('.').pop()
+const FileUpload: FC<FileUploadProps> = ({
+  apiEndpoint,
+  onChange,
+  value,
+  accept = "image/*,application/pdf",
+}) => {
+  const [dragActive, setDragActive] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleRemove = () => {
-    onChange('')
-  }
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(e.type === "dragenter" || e.type === "dragover");
+  };
 
-  if (value) {
-    return (
-      <div className="flex flex-col justify-center items-center space-y-1">
-        {type !== 'pdf' ? (
-          <div className="relative w-24 h-24 border border-gray-300 rounded-md overflow-hidden shadow-sm">
-            <Image
-              src={value}
-              alt="uploaded image"
-              className="object-cover"
-              fill
-            />
-          </div>
-        ) : (
-          <div className="relative flex items-center p-1 rounded-md bg-white border border-gray-300 shadow-sm">
-            <FileIcon className="text-gray-700" />
-            <a
-              href={value}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="ml-1 text-sm text-blue-600 hover:underline"
-            >
-              View PDF
-            </a>
-          </div>
-        )}
-        <Button
-          onClick={handleRemove}
-          variant="ghost"
-          type="button"
-          className="flex items-center space-x-1 text-sm"
-        >
-          <X className="h-3 w-3 text-gray-700" />
-          <span className="text-gray-700">Remove</span>
-        </Button>
-      </div>
-    )
-  }
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      onChange(URL.createObjectURL(e.dataTransfer.files[0]));
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      onChange(URL.createObjectURL(e.target.files[0]));
+    }
+  };
+
+  const onButtonClick = () => {
+    inputRef.current?.click();
+  };
+
+  const clearFile = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onChange("");
+  };
 
   return (
-    <div className="w-full p-2 border border-dashed border-gray-300 rounded-md bg-gray-50 hover:bg-gray-100 transition duration-200">
-      <UploadDropzone
-        endpoint={apiEndpoint}
-        onClientUploadComplete={(res) => {
-          if (res && res.length > 0) {
-            onChange(res[0].url)
-          }
-          setLoading(false)
-        }}
-        onUploadError={(error: Error) => {
-          console.error(error)
-          setLoading(false)
-        }}
+    <div className="relative font-sora">
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        onChange={handleChange}
+        className="hidden"
       />
-      {loading && <p className="mt-1 text-xs text-gray-500">Uploading...</p>}
-    </div>
-  )
-}
 
-export default FileUpload
+      <div
+        onClick={onButtonClick}
+        onDragEnter={handleDrag}
+        onDragLeave={handleDrag}
+        onDragOver={handleDrag}
+        onDrop={handleDrop}
+        className={`flex flex-col items-center justify-center w-full min-h-[120px] cursor-pointer rounded-lg transition-all duration-200 ease-in-out ${
+          dragActive ? 'bg-blue-50 border-blue-400' : 'bg-white hover:bg-blue-50'
+        } ${value ? 'border-blue-400' : 'border-dashed border-2 border-blue-200 hover:border-blue-400'}`}
+      >
+        {value ? (
+          <div className="relative w-full h-full p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <File className="h-5 w-5 text-blue-600" />
+                <span className="text-sm font-medium text-blue-700 truncate max-w-[200px]">
+                  {value.split('/').pop()}
+                </span>
+              </div>
+              <button
+                onClick={clearFile}
+                className="p-1 hover:bg-blue-100 rounded-full transition-colors"
+              >
+                <X className="h-4 w-4 text-blue-600" />
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center p-4 text-center">
+            <Upload className="h-8 w-8 text-blue-600 mb-2 " />
+            <p className="text-sm font-medium text-blue-700">
+              Drag & drop or <br /> Click to upload
+            </p>
+            <p className="text-xs text-blue-500 mt-1">
+              Image(4MB)
+            </p>
+          </div>
+        )}
+      </div>
+      
+      <button
+        onClick={onButtonClick}
+        className="mt-4 w-full  py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors "
+      >
+        Upload
+      </button>
+    </div>
+  );
+};
+
+export default FileUpload;

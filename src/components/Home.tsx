@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useClerk } from '@clerk/clerk-react';
 import Image from 'next/image';
+import SideNav from './side-nav';
+import Header from './header';
 
 const DashboardHome = () => {
   const { user, signOut } = useClerk();
@@ -32,82 +34,8 @@ const DashboardHome = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50/50">
-      {/* Top Navigation */}
-      <nav className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
-        <div className="mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <span className="font-sora text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-                3SM TECH
-              </span>
-            </div>
-            
-        
-
-            {/* User Menu */}
-            <div className="flex items-center gap-4">
-              <button className="p-2 rounded-full hover:bg-gray-100">
-                <Bell className="h-5 w-5 text-gray-600" />
-              </button>
-              
-             
-                     {/* SignOut */}
-
-                <DropdownMenu>
-                        <DropdownMenuTrigger className="flex items-center gap-3 pl-4 border-l outline-none">
-                            <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-full overflow-hidden relative">
-                                {user?.profileImageUrl ? (
-                                <Image
-                                    src={user.profileImageUrl}
-                                    alt="User avatar"
-                                    layout="fill" // Use fill to cover the container
-                                    className="rounded-full object-cover" // Rounded corners
-                                    priority // Optional: use for images that are crucial for rendering
-                                />
-                                ) : (
-                                <div className="h-full w-full flex items-center justify-center bg-gray-300 rounded-full">
-                                    <span className="text-white">👤</span> {/* Placeholder icon */}
-                                </div>
-                                )}
-                            </div>
-                            <div className="hidden md:block text-left text-black">
-                                <p className="font-sora text-sm font-medium">{user?.fullName}</p>
-                                <p className="text-xs text-gray-500">{user?.email}</p>
-                            </div>
-                            </div>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-56">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="cursor-pointer">
-                            <User className="mr-2 h-4 w-4" />
-                            <span>Profile</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="cursor-pointer">
-                            <Settings className="mr-2 h-4 w-4" />
-                            <span>Settings</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="cursor-pointer">
-                            <HelpCircle className="mr-2 h-4 w-4" />
-                            <span>Help & Support</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem 
-                            className="cursor-pointer text-red-600"
-                            onClick={handleSignOut}
-                            >
-                            <LogOut className="mr-2 h-4 w-4" />
-                            <span>Sign Out</span>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                 </DropdownMenu>
-
-            </div>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-gray-50/50 lg:pl-[288px]">
+     <Header/>
 
       {/* Main Content */}
       <main className="pt-20 pb-8 px-4 sm:px-6 lg:px-8">

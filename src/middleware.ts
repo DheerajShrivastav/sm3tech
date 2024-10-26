@@ -48,7 +48,7 @@ export default clerkMiddleware(async (auth, req) => {
     // Allow the request to proceed
     return NextResponse.next()
   } catch (error) {
-    console.error(error)
+    // console.error(error)
     // Handle errors and prevent the server from crashing
     return NextResponse.error()
   }

@@ -56,7 +56,7 @@ const SideNav = () => {
         <div className="flex flex-col h-full">
           {/* Logo/Brand Section */}
           <div className="p-6 border-b border-gray-100 ">
-            <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent lg:bg-white">
+            <span className="text-lg font-bold bg-white bg-clip-text text-transparent lg:bg-white">
               3SM TECH
             </span>
           </div>

@@ -9,7 +9,7 @@ export default function Home() {
       <SideNav />
 
       {/* Main Content */}
-      <div className="flex-1 bg-gray-100 p-6 overflow-auto">
+      <div className="flex-1  lg:p-8 overflow-auto">
         <DashboardHome />
       </div>
     </div>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SIDENAV_ITEMS } from "@/constants";
 import { SideNavItem } from "@/types";
-import { Menu, X, ChevronDown, Settings } from "lucide-react";
+import { Menu, X, ChevronDown, Settings, Home, FileText, Users, Bell, BarChart2, Shield, Briefcase, HelpCircle } from "lucide-react";
 
 const SideNav = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +31,7 @@ const SideNav = () => {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="p-2.5 rounded-xl bg-white shadow-md hover:shadow-lg hover:bg-gray-50 transition-all duration-200"
+            aria-label="Open Menu"
           >
             <Menu className="w-5 h-5 text-gray-700" />
           </button>
@@ -40,7 +41,7 @@ const SideNav = () => {
       {/* Sidebar */}
       <div
         id="sidebar"
-        className={`fixed top-0 left-0 h-screen bg-white shadow-xl z-50 transition-all duration-300 ease-in-out font-sora
+        className={`fixed top-0 left-0 h-screen bg-gradient-to-b from-white to-gray-50 shadow-xl z-50 transition-all duration-300 ease-in-out font-sora
         ${isOpen ? "w-72" : "w-0 md:w-72"} overflow-hidden`}
       >
         {/* Close button for mobile */}
@@ -48,23 +49,20 @@ const SideNav = () => {
           <button
             onClick={() => setIsOpen(false)}
             className="absolute top-4 right-4 p-2 rounded-xl bg-gray-50 hover:bg-gray-100 md:hidden transition-all duration-200"
+            aria-label="Close Menu"
           >
             <X className="w-5 h-5 text-gray-600" />
           </button>
         )}
 
         <div className="flex flex-col h-full">
-          {/* Logo/Brand Section */}
-          <div className="p-6 border-b border-gray-100 ">
-            <span className="text-lg font-bold bg-white bg-clip-text text-transparent lg:bg-white">
-              3SM TECH
-            </span>
-          </div>
+          {/* Top Whitespace */}
+          <div className="h-16"></div>
 
           {/* Main Navigation */}
           <div className="flex-1 overflow-y-auto">
             <div className="p-4">
-              <div className="flex flex-col space-y-1">
+              <div className="flex flex-col space-y-2">
                 {SIDENAV_ITEMS.map((item, idx) => (
                   <MenuItem key={idx} item={item} />
                 ))}
@@ -73,10 +71,10 @@ const SideNav = () => {
           </div>
 
           {/* Footer Section */}
-          <div className="p-4 border-t border-gray-100 bg-gray-50">
+          <div className="p-4 border-t border-gray-100 bg-gradient-to-r from-gray-50 to-blue-50">
             <Link
               href="/settings"
-              className="flex items-center p-3 rounded-xl hover:bg-white transition-all duration-200 group"
+              className="flex items-center p-3 rounded-xl hover:bg-white/80 transition-all duration-200 group"
             >
               <Settings className="w-5 h-5 text-gray-600 group-hover:text-blue-600" />
               <span className="ml-3 font-medium text-gray-600 group-hover:text-blue-600">Settings</span>
@@ -125,7 +123,7 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
             onClick={() => setSubMenuOpen(!subMenuOpen)}
             className={`w-full group flex items-center justify-between p-3 rounded-xl transition-all duration-200 ${
               isActive
-                ? "bg-blue-50"
+                ? "bg-blue-50 shadow-sm"
                 : "hover:bg-gray-50"
             }`}
           >
@@ -153,7 +151,7 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
               subMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
             }`}
           >
-            <div className="ml-4 mt-2 space-y-1 border-l-2 border-gray-100">
+            <div className="ml-4 mt-2 space-y-1 border-l-2 border-blue-100">
               {item.subMenuItems?.map((subItem, idx) => (
                 <MenuItem key={idx} item={subItem} />
               ))}
@@ -165,7 +163,7 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
           href={item.path}
           className={`group flex items-center p-3 rounded-xl transition-all duration-200 ${
             isActive
-              ? "bg-blue-50"
+              ? "bg-blue-50 shadow-sm"
               : "hover:bg-gray-50"
           }`}
         >

@@ -7,23 +7,6 @@ import { useRouter } from 'next/navigation'
 import { AlertDialog } from '../ui/alert-dialog'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-  Building2,
-  FileCheck,
-  FileImage,
-  FileText,
-  ShieldCheck,
-  Upload,
-  User,
-  Waves,
-  Files,
-  Factory,
-  FileKey,
-  FileSpreadsheet,
-  Lightbulb,
-  
-} from 'lucide-react'
-import * as z from 'zod'
-import {
   Card,
   CardContent,
   CardDescription,
@@ -40,19 +23,22 @@ import {
   FormMessage,
 } from '../ui/form'
 import { useToast } from '../ui/use-toast'
+
+import * as z from 'zod'
 import FileUpload from '../file-upload'
 import { Input } from '../ui/input'
 import { initUser, upsertAgency } from '@/lib/queries'
 import { Button } from '../ui/button'
+import { UploadButton } from '@/lib/uploadthing'
 
 type Props = {
   data?: Partial<IAgency>
 }
 
 const occupierDocumentsSchema = z.object({
-  name: z.string(),
-  photo: z.string(),
-  signature: z.string(),
+  name: z.string().min(1, "Name is required"),
+  photo: z.string().min(1, "Photo is required"),
+  signature: z.string().min(1, "Signature is required"),
 })
 
 const applicantIdProofSchema = z
@@ -64,7 +50,7 @@ const applicantIdProofSchema = z
     panCard: z.string().optional(),
   })
   .refine((data) => Object.values(data).some((value) => value !== undefined), {
-    message: 'At least one occupier document is required',
+    message: 'At least one ID proof document is required',
   })
 
 const previousFactoryLicenseSchema = z.object({
@@ -91,7 +77,7 @@ const ownershipDocumentsSchema = z
     taxReceipt: z.string().optional(),
   })
   .refine((data) => Object.values(data).some((value) => value !== undefined), {
-    message: 'At least one ownership document is required',
+    message: 'At least one occupier document is required',
   })
 
 const localAuthorityNoCSchema = z
@@ -102,7 +88,7 @@ const localAuthorityNoCSchema = z
     midcNoC: z.string().optional(),
   })
   .refine((data) => Object.values(data).some((value) => value !== undefined), {
-    message: 'At least one NoC is required',
+    message: 'At least one occupier document is required',
   })
 
 const mpcbConsentSchema = z.object({
@@ -119,7 +105,7 @@ const electricityBillSchema = z
     loadSanctionletter: z.string().optional(),
   })
   .refine((data) => Object.values(data).some((value) => value !== undefined), {
-    message: 'At least one electricity document is required',
+    message: 'At least one occupier document is required',
   })
 
 const acceptanceLetterSchema = z.object({
@@ -153,78 +139,142 @@ const AgencyDetails = ({ data }: Props) => {
   })
 
   const handleSubmit = async (values: z.infer<typeof FormSchema>) => {
+    console.log('first')
     try {
-      let newUserData = await initUser({})
+      console.log(values)
+      let newUserData
+      let custId
+      if (data?.id) {
+        const bodyData = {
+          occupierDocuments: values.occupierDocuments,
+          applicantIdProof: values.applicantIdProof,
+          previousFactoryLicense: values.previousFactoryLicense,
+          privateLimitedCompany: values.privateLimitedCompany,
+          listOfRawMaterials: values.listOfRawMaterials,
+          ownershipDocuments: values.ownershipDocuments,
+          localAuthorityNoC: values.localAuthorityNoC,
+          mpcbConsent: values.mpcbConsent,
+          sketchFactory: values.sketchFactory,
+          electricityBill: values.electricityBill,
+          acceptanceLetter: values.acceptanceLetter,
+          flowChart: values.flowChart,
+        }
+      }
+
+      newUserData = await initUser({})
+      // if (!data?.id) return
+      console.log('here is the ')
       const response = await upsertAgency({
         id: data?.id ? data.id : v4(),
-        ...values
+        occupierDocuments: values.occupierDocuments,
+        applicantIdProof: values.applicantIdProof,
+        previousFactoryLicense: values.previousFactoryLicense,
+        privateLimitedCompany: values.privateLimitedCompany,
+        listOfRawMaterials: values.listOfRawMaterials,
+        ownershipDocuments: values.ownershipDocuments,
+        localAuthorityNoC: values.localAuthorityNoC,
+        mpcbConsent: values.mpcbConsent,
+        sketchFactory: values.sketchFactory,
+        electricityBill: values.electricityBill,
+        acceptanceLetter: values.acceptanceLetter,
+        flowChart: values.flowChart,
       })
-      
       toast({
-        title: 'Agency Created Successfully',
-        description: 'Your agency has been created and saved.',
-        className: 'bg-blue-50 border-blue-200',
+        title: 'Created Agency',
       })
-      
-      if (data?.id || response) {
-        router.push('/sample')
+      console.log("after and berofre the resposnce")
+      if (data?.id) return router.push('/sample')
+      if (response) {
+        return router.push('/sample')
       }
     } catch (error) {
       console.log(error)
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'Could not create your agency. Please try again.',
+        title: 'Oppse!',
+        description: 'could not create your agency',
       })
     }
   }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-4 md:p-8">
-      {/* Decorative elements */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute -left-4 top-20 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl" />
-        <div className="absolute right-10 bottom-10 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl" />
-      </div>
-
-      <Card className="w-full bg-white/80 backdrop-blur-lg shadow-xl border border-blue-100 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 rounded-bl-full" />
-        
-        <CardHeader className="space-y-4 pb-8">
-          <div className="flex items-center space-x-3">
-            <div className="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center">
-              <Building2 className="h-6 w-6 text-white" />
-            </div>
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-500 bg-clip-text text-transparent">
-              Agency Information
-            </CardTitle>
-          </div>
-          <div className="flex items-center space-x-2 text-blue-600">
-            <Waves className="h-4 w-4" />
-            <p className="text-sm">Please fill in all the required documents</p>
-          </div>
+    <AlertDialog>
+      <Card className="w-full bg-white text-black">
+        <CardHeader>
+          <CardTitle className="text-black">Agency Information</CardTitle>
+          <CardDescription className="text-gray-600">
+            Lets create an agency for you business.
+          </CardDescription>
         </CardHeader>
-
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-              {/* Name Section */}
-              <div className="bg-blue-50/50 p-6 rounded-xl border border-blue-100">
-                <div className="flex items-center space-x-2 mb-4">
-                  <User className="h-5 w-5 text-blue-600" />
-                  <h3 className="font-semibold text-blue-800">Personal Details</h3>
-                </div>
-                
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-4"
+            >
+              {/* Text inputs take full width */}
+              <div className="w-full">
                 <FormField
                   control={form.control}
                   name="occupierDocuments.name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-blue-700">Full Name</FormLabel>
+                      <FormLabel className="text-black">Name</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Enter your full name"
-                          className="bg-white border-blue-200 focus:border-blue-400 focus:ring-blue-400 text-black"
-                          {...field}
+                        <Input placeholder="Your name" {...field} className="bg-white text-black w-full" />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="w-full">
+                <FormField
+                  control={form.control}
+                  name="privateLimitedCompany.listOfDirectors"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">List of Directors</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter the Names" {...field} className="bg-white text-black w-full" />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* File uploads in grid of 4 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <FormField
+                  control={form.control}
+                  name="occupierDocuments.photo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Occupier Photo</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="imageUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="occupierDocuments.signature"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Occupier Signature</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="imageUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
                         />
                       </FormControl>
                       <FormMessage className="text-red-500" />
@@ -233,108 +283,463 @@ const AgencyDetails = ({ data }: Props) => {
                 />
               </div>
 
-              {/* Document Sections */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* Occupier Documents */}
-                <div className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100 shadow-sm">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <FileImage className="h-5 w-5 text-blue-600" />
-                    <h3 className="font-semibold text-blue-800">Occupier Documents</h3>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="occupierDocuments.photo"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-blue-700">Photo</FormLabel>
-                          <div className="border-2 border-dashed border-blue-200 rounded-lg p-4 transition-colors hover:border-blue-400">
-                            <FileUpload
-                              apiEndpoint="imageUploader"
-                              onChange={field.onChange}
-                              value={field.value}
-                            />
-                          </div>
-                          <FormMessage className="text-red-500" />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
-
-                {/* ID Proof Section */}
-                <div className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100 shadow-sm">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <ShieldCheck className="h-5 w-5 text-blue-600" />
-                    <h3 className="font-semibold text-blue-800">ID Proof</h3>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="applicantIdProof.aadharCard"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-blue-700">Aadhar Card</FormLabel>
-                          <div className="border-2 border-dashed border-blue-200 rounded-lg p-4 transition-colors hover:border-blue-400">
-                            <FileUpload
-                              apiEndpoint="imageUploader"
-                              onChange={field.onChange}
-                              value={field.value || ""}
-                            />
-                          </div>
-                          <FormMessage className="text-red-500" />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
-
-                {/* License Section */}
-                <div className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100 shadow-sm">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <FileCheck className="h-5 w-5 text-blue-600" />
-                    <h3 className="font-semibold text-blue-800">License Documents</h3>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="previousFactoryLicense.previousFactoryLicense"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-blue-700">Factory License</FormLabel>
-                          <div className="border-2 border-dashed border-blue-200 rounded-lg p-4 transition-colors hover:border-blue-400">
-                            <FileUpload
-                              apiEndpoint="pdfUploader"
-                              onChange={field.onChange}
-                              value={field.value || ''}
-                            />
-                          </div>
-                          <FormMessage className="text-red-500" />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <FormField
+                  control={form.control}
+                  name="applicantIdProof.electionId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Election ID</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="imageUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="applicantIdProof.drivingLicense"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Driving License</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="imageUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="applicantIdProof.aadharCard"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Aadhar Card</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="imageUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="applicantIdProof.passport"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Passport</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="imageUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
               </div>
 
-              {/* Submit Button */}
-              <div className="flex justify-end pt-6">
-                <Button 
-                  type="submit"
-                  className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-2 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg hover:shadow-blue-200 flex items-center space-x-2"
-                >
-                  <Upload className="h-5 w-5" />
-                  <span>Create Agency</span>
-                </Button>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <FormField
+                  control={form.control}
+                  name="applicantIdProof.panCard"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Pan Card</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="imageUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="previousFactoryLicense.previousFactoryLicense"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Previous Factory License</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="previousFactoryLicense.planApprovalLetter"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Plan Approval Letter</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="privateLimitedCompany.moa"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">MOA</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <FormField
+                  control={form.control}
+                  name="privateLimitedCompany.boardResolution"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Board Resolution</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="privateLimitedCompany.form32"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Form 32</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="listOfRawMaterials.listOfRawMaterials"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">List of Raw Materials</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="ownershipDocuments.leaveAndLicenseAgreement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Leave and License Agreement</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <FormField
+                  control={form.control}
+                  name="ownershipDocuments.midcAllotmentLetter"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">MIDC Allotment Letter</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="ownershipDocuments.sevenTwelveExtract"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">7/12 Extract</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="ownershipDocuments.taxReceipt"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Tax Receipt</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="localAuthorityNoC.localAuthorityNoC"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Local Authority NOC</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <FormField
+                  control={form.control}
+                  name="localAuthorityNoC.corporationNoC"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Corporation NOC</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="localAuthorityNoC.grampanchayatNoC"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Gram Panchayat NOC</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="localAuthorityNoC.midcNoC"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">MIDC NOC</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="mpcbConsent.mpcbConsent"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">MPCB Consent</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                <FormField
+                  control={form.control}
+                  name="sketchFactory.sketch"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Sketch of Factory</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="electricityBill.electricityBill"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Electricity Bill</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="electricityBill.loadSanctionletter"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Load Sanction Letter</FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+               
+              </div>
+              <FormField
+                  control={form.control}
+                  name="acceptanceLetter.acceptanceLetter"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">
+                        Acceptance Letter as Occupier by the Nominated Director
+                      </FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+
+              <div className="grid grid-cols-1 md:grid-cols-1 gap-2">
+                <FormField
+                  control={form.control}
+                  name="flowChart.flowChart"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-black">
+                        FLOW CHART OF ALL MANUFACTURING PROCESSES
+                      </FormLabel>
+                      <FormControl>
+                        <FileUpload
+                          apiEndpoint="pdfUploader"
+                          onChange={field.onChange}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <Button className="bg-blue-600 text-white w-full" type="submit">{"Save Agency Information"}</Button>
             </form>
           </Form>
         </CardContent>
       </Card>
-    </div>
+    </AlertDialog>
   )
 }
 

@@ -10,8 +10,8 @@ const PlanApproval = () => {
   return (
     <div className=" min-h-screen w-full  font-sora bg-gray-100">
 
-      <main className="flex-1 px-4 lg:px-8 py-6 bg-gray-50"> {/* Adjusted padding */}
-        <div className="bg-white p-6 rounded-md shadow-md">
+      <main className="">
+        <div className="">
           <AgencyDetails />
         </div>
       </main>

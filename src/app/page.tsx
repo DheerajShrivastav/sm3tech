@@ -4,7 +4,7 @@ import SideNav from "@/components/side-nav";
 
 export default function Home() {
   return (
-    <div className="flex flex-row h-screen">
+    <div className="flex flex-row h-screen bg-white">
       {/* Sidebar */}
       <SideNav />
 

@@ -27,7 +27,7 @@ import {
   FileCheck,
 } from 'lucide-react'
 import * as z from 'zod'
-import { initUser, upsertAgency } from '@/lib/queries'
+import { getUser, initUser, upsertAgency } from '@/lib/queries'
 
 // Form Schema Definition
 const occupierDocumentsSchema = z.object({
@@ -193,7 +193,7 @@ const AgencyDetails: React.FC<AgencyDetailsProps> = ({ data }) => {
                 </div>
                 <div className=" rounded-lg p-3 transition-colors hover:border-blue-400">
                   <FileUpload
-                    apiEndpoint={apiEndpoint}
+                    apiEndpoint={apiEndpoint as 'pdfUploader' | 'imageUploader'}
                     onChange={formField.onChange}
                     value={formField.value || ''}
                   />
@@ -235,6 +235,7 @@ const AgencyDetails: React.FC<AgencyDetailsProps> = ({ data }) => {
       console.log('here is the ')
       const response = await upsertAgency({
         id: data?.id ? data.id : v4(),
+        user: (await getUser())?._id,
         occupierDocuments: values.occupierDocuments,
         applicantIdProof: values.applicantIdProof,
         previousFactoryLicense: values.previousFactoryLicense,
@@ -252,9 +253,9 @@ const AgencyDetails: React.FC<AgencyDetailsProps> = ({ data }) => {
         title: 'Created Agency',
       })
       console.log('after and berofre the resposnce')
-      if (data?.id) return router.push('/sample')
+      if (data?.id) return router.push('/inspection-view')
       if (response) {
-        return router.push('/sample')
+        return router.push('/inspection-view')
       }
     } catch (error) {
       console.log(error)

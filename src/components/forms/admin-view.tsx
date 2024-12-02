@@ -13,6 +13,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 const AdminView = () => {
   const [user, setUser] = useState<IUser | null>(null)
@@ -93,7 +94,9 @@ const AdminView = () => {
 
               <TableCell className="py-4 px-4 text-right">
                 <Button className="mr-2 bg-indigo-600 text-white hover:bg-indigo-700">
-                  View Details
+                  <Link href={`/inspection-view/agency/${agency?._id}`}>
+                    View Details
+                  </Link>
                 </Button>
                 <Button className="bg-green-600 text-white hover:bg-green-700">
                   Edit Agency

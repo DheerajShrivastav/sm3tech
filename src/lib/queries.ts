@@ -47,9 +47,9 @@ export const getUser = async () => {
     })
       .lean()
       .exec()
-    const plainUser = JSON.parse(JSON.stringify(userData))
-    userData = plainUser
-    return plainUser
+    // const plainUser = JSON.parse(JSON.stringify(userData))
+    // userData = plainUser
+    return userData
   } catch (error) {
     console.error('Error getting user:', error)
     throw new Error('Error getting user')
@@ -192,7 +192,7 @@ export const upsertAgency = async (agencyData: Partial<IAgency>) => {
         flowChart: {
           flowChart: agencyData.flowChart?.flowChart,
         },
-        user: getUser(),
+        user: agencyData.user,
       })
       await agency.save()
     }
@@ -220,8 +220,8 @@ export const getAgency = async (id: string) => {
       .populate('user')
       .lean()
       .exec()
-    const plainAgency = JSON.parse(JSON.stringify(agency))
-    return plainAgency
+    // const plainAgency = JSON.parse(JSON.stringify(agency))
+    return agency
   } catch (error) {
     console.error('Error getting agency:', error)
     throw new Error('Error getting agency')
@@ -338,5 +338,22 @@ const deleteFile = async ({ fileKey }: { fileKey: string | string[] }) => {
   } catch (error) {
     console.error('Error deleting file:', error)
     throw new Error('Error deleting file')
+  }
+}
+
+
+
+// to do 
+export const getFactoryLicense = async (id: string) => {
+  try {
+    await connectDB()
+    const factoryLicense = await Agency.findOne({ _id: id })
+      .populate('user')
+      .lean()
+      .exec()
+    return factoryLicense
+  } catch (error) {
+    console.error('Error getting factory license:', error)
+    throw new Error('Error getting factory license')
   }
 }

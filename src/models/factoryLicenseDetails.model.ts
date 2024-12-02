@@ -3,6 +3,7 @@ import { string } from 'zod'
 
 // Define the IAgency interface and export it
 export interface IFactoryLicenseDetails extends Document {
+  user: typeof mongoose.Schema.ObjectId
   manufacturingProcess: string
   industryRegistration: string
   landOwnershipCertificate: string
@@ -29,6 +30,7 @@ export interface IFactoryLicenseDetails extends Document {
 
 const FactoryLicenseDetails = new Schema<IFactoryLicenseDetails>(
   {
+    user: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
     manufacturingProcess: {
       type: String,
       required: true,

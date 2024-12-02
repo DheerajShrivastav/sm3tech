@@ -2,12 +2,10 @@ import mongoose, { Document, model, Schema } from 'mongoose'
 
 // Define the IAgency interface and export it
 export interface IAgency extends Document {
-  user : typeof mongoose.Schema.ObjectId
+  user: typeof mongoose.Schema.ObjectId
   occupierDocuments: {
-    phone?: string
-    address?: string
+    photo?: string
     name: string
-    photo: string
     signature: string
   }
   applicantIdProof: {
@@ -64,13 +62,11 @@ export interface IAgency extends Document {
 // Define the Agency schema
 const AgencySchema = new Schema<IAgency>(
   {
-    user: { type: mongoose.Schema.ObjectId , ref: 'User', required: true },
+    user: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
     occupierDocuments: {
       name: { type: String, required: true },
       photo: { type: String, required: true },
       signature: { type: String, required: true },
-      phone: { type: String, required: true },
-      address: { type: String, required: true },
     },
     applicantIdProof: {
       electionId: { type: String },

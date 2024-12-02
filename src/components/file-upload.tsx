@@ -2,7 +2,6 @@
 import { FileIcon, X } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
-// import { Button } from '../ui/button'
 import { UploadDropzone } from '@/lib/uploadthing'
 
 type Props = {
@@ -41,13 +40,13 @@ const FileUpload = ({ apiEndpoint, onChange, value }: Props) => {
         )}
         <button onClick={() => onChange('')} type="button">
           <X className="h-4 w-4" />
-          Remove Logo
+          File Uploaded
         </button>
       </div>
     )
   }
   return (
-    <div className="w-full bg-muted/30">
+    <div className="w-full bg-white">
       <UploadDropzone
         endpoint={apiEndpoint}
         onClientUploadComplete={(res) => {

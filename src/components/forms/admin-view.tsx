@@ -63,11 +63,21 @@ const AdminView = () => {
         </TableCaption>
         <TableHeader>
           <TableRow className="bg-gray-100">
-            <TableHead className="py-3 px-4 font-medium text-gray-700">Agency Name</TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700">Agency Email</TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700">Agency Address</TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700">Agency Phone</TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700 text-right">Actions</TableHead>
+            <TableHead className="py-3 px-4 font-medium text-gray-700">
+              Agency Name
+            </TableHead>
+            <TableHead className="py-3 px-4 font-medium text-gray-700">
+              Agency Email
+            </TableHead>
+            <TableHead className="py-3 px-4 font-medium text-gray-700">
+              Agency Address
+            </TableHead>
+            <TableHead className="py-3 px-4 font-medium text-gray-700">
+              Agency Phone
+            </TableHead>
+            <TableHead className="py-3 px-4 font-medium text-gray-700 text-right">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
 
@@ -80,12 +90,7 @@ const AdminView = () => {
               <TableCell className="py-4 px-4 text-gray-600">
                 {agency?.applicantIdProof.aadharCard || 'N/A'}
               </TableCell>
-              <TableCell className="py-4 px-4 text-gray-600">
-                {agency?.occupierDocuments.address || 'N/A'}
-              </TableCell>
-              <TableCell className="py-4 px-4 text-gray-600">
-                {agency?.occupierDocuments.phone || 'N/A'}
-              </TableCell>
+
               <TableCell className="py-4 px-4 text-right">
                 <Button className="mr-2 bg-indigo-600 text-white hover:bg-indigo-700">
                   View Details
@@ -103,7 +108,9 @@ const AdminView = () => {
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Admin View: Agencies</h2>
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+        Admin View: Agencies
+      </h2>
       {renderAgencies()}
     </div>
   )

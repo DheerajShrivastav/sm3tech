@@ -17,9 +17,9 @@ const InspectionView = ({ params }: { params: Params }) => {
   // const { type, id } = router.query
   const type = params.type
   const id = params.id
-  const [data, setData] = useState<IAgency | IFactoryLicenseDetails | null | []>(
-    null
-  )
+  const [data, setData] = useState<
+    IAgency | IFactoryLicenseDetails | null | []
+  >(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -183,7 +183,85 @@ const InspectionView = ({ params }: { params: Params }) => {
             Manufacturing Process:{' '}
             {(data as IFactoryLicenseDetails).manufacturingProcess}
           </p>
-          {/* Render other factory license details here */}
+          <p>
+            Land Ownership Certificate:{' '}
+            {(data as IFactoryLicenseDetails).landOwnershipCertificate}
+          </p>
+          <p>
+            Detailed Proposal of Pollution Control System:{' '}
+            {
+              (data as IFactoryLicenseDetails)
+                .detailedProposalOfPollutionControlSystem
+            }
+          </p>
+          <p>
+            Previous Consent Copy:{' '}
+            {(data as IFactoryLicenseDetails).previousConsentCopy}
+          </p>
+          <p>Fixed Assets: {(data as IFactoryLicenseDetails).fixedAssets}</p>
+          <p>
+            Audited Balance Sheet:{' '}
+            {(data as IFactoryLicenseDetails).auditedBalanceSheet}
+          </p>
+          <p>Visit Report: {(data as IFactoryLicenseDetails).visitReport}</p>
+          <p>JVS Report: {(data as IFactoryLicenseDetails).jvsReport}</p>
+          <p>Local Body NOC: {(data as IFactoryLicenseDetails).localBodyNoc}</p>
+          <p>Other: {(data as IFactoryLicenseDetails).other}</p>
+          <p>
+            Company's Authorization Letter:{' '}
+            {(data as IFactoryLicenseDetails).companysAuthorizationLetter}
+          </p>
+          <p>
+            PAN Card Copy of Industry:{' '}
+            {(data as IFactoryLicenseDetails).panCardCopyOfIndustry}
+          </p>
+          <p>
+            Aadhaar Card or PAN Card Copy of Authorized Person:{' '}
+            {
+              (data as IFactoryLicenseDetails)
+                .aadhaarCardOrPanCardCopyOfAuthorizedPerson
+            }
+          </p>
+          <p>
+            Industry Board of Resolution List of Directors:{' '}
+            {
+              (data as IFactoryLicenseDetails)
+                .industryBoardOfResolutionListofDirectors
+            }
+          </p>
+          <p>
+            No Increase in Pollution Load Certificate:{' '}
+            {
+              (data as IFactoryLicenseDetails)
+                .noIncreaseInPollutionLoadCertificate
+            }
+          </p>
+          <p>
+            Environment Clearance Copy of Existing Product:{' '}
+            {
+              (data as IFactoryLicenseDetails)
+                .environmentClearanceCopyOfExistingProduct
+            }
+          </p>
+          <p>
+            Warning Notice: {(data as IFactoryLicenseDetails).WarningNotice}
+          </p>
+          <p>
+            Show Cause Notice:{' '}
+            {(data as IFactoryLicenseDetails).ShowCauseNotice}
+          </p>
+          <p>
+            Proposed Directions:{' '}
+            {(data as IFactoryLicenseDetails).ProposedDirections}
+          </p>
+          <p>
+            Interim Directions:{' '}
+            {(data as IFactoryLicenseDetails).InterimDirections}
+          </p>
+          <p>
+            Closure Directions:{' '}
+            {(data as IFactoryLicenseDetails).ClosureDirections}
+          </p>
         </>
       )}
     </div>

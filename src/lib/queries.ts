@@ -8,6 +8,8 @@ import { get } from 'http'
 import { QueryCache } from 'react-query'
 import { UTApi } from 'uploadthing/server'
 import { utapi } from '@/server/uploadthing'
+import { promises } from 'dns'
+import { IFactoryLicenseDetails } from '@/models/factoryLicenseDetails.model'
 // Write a query to save the current user's profile from Clerk provider in MongoDB
 export const initUser = async (newUser: Partial<IUser>) => {
   const user = await currentUser()
@@ -213,7 +215,7 @@ export const getAgencies = async () => {
     throw new Error('Error getting agencies')
   }
 }
-export const getAgency = async (id: string) => {
+export const getAgency = async (id: string): Promise<IAgency | null> => {
   try {
     await connectDB()
     const agency = await Agency.findOne({ _id: id })
@@ -221,7 +223,7 @@ export const getAgency = async (id: string) => {
       .lean()
       .exec()
     // const plainAgency = JSON.parse(JSON.stringify(agency))
-    return agency
+    return agency as IAgency | null;;
   } catch (error) {
     console.error('Error getting agency:', error)
     throw new Error('Error getting agency')
@@ -344,14 +346,14 @@ const deleteFile = async ({ fileKey }: { fileKey: string | string[] }) => {
 
 
 // to do 
-export const getFactoryLicense = async (id: string) => {
+export const getFactoryLicense = async (id: string): Promise<IFactoryLicenseDetails | null> => {
   try {
     await connectDB()
     const factoryLicense = await Agency.findOne({ _id: id })
       .populate('user')
       .lean()
       .exec()
-    return factoryLicense
+    return factoryLicense as IFactoryLicenseDetails | null
   } catch (error) {
     console.error('Error getting factory license:', error)
     throw new Error('Error getting factory license')

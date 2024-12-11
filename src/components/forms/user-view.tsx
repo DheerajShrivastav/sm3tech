@@ -7,25 +7,26 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { IAgency } from '@/models/agency.model';
 
-interface IAgency {
-  registrationDocuments: {
-    certificate?: string;
-    license?: string;
-  };
-  occupierDocuments: {
-    name?: string;
-    photo?: string;
-    signature?: string;
-  };
-  applicantIdProof: {
-    aadharCard?: string;
-    drivingLicense?: string;
-    passport?: string;
-    panCard?: string;
-    electionId?: string;
-  };
-}
+// interface IAgency {
+//   registrationDocuments: {
+//     certificate?: string;
+//     license?: string;
+//   };
+//   occupierDocuments: {
+//     name?: string;
+//     photo?: string;
+//     signature?: string;
+//   };
+//   applicantIdProof: {
+//     aadharCard?: string;
+//     drivingLicense?: string;
+//     passport?: string;
+//     panCard?: string;
+//     electionId?: string;
+//   };
+// }
 
 type Props = {
   id: string;
@@ -120,7 +121,7 @@ const UserView = ({ id }: Props) => {
 
   React.useEffect(() => {
     const fetchAgency = async () => {
-      const response = await getAgency(id);
+      const response: IAgency| null = await getAgency(id);
       setAgency(response);
     };
     fetchAgency();
@@ -129,97 +130,109 @@ const UserView = ({ id }: Props) => {
   return (
     <div className="flex flex-col font-sora rounded-xl bg-white/90 p-3 md:p-6 w-full max-w-3xl mx-auto shadow-xl relative backdrop-blur-sm">
       <DecorativeBg />
-      
+
       <div className="relative z-10 space-y-3 md:space-y-4">
         <div className="flex items-center justify-between mb-4 md:mb-8">
           <div className="flex items-center gap-2 md:gap-3">
             <div className="p-2 md:p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-lg">
               <UserSquare2 className="w-4 h-4 md:w-6 md:h-6 text-white" />
             </div>
-            <h3 className="text-md md:text-2xl font-semibold text-blue-900">Agency Documents</h3>
+            <h3 className="text-md md:text-2xl font-semibold text-blue-900">
+              Agency Documents
+            </h3>
           </div>
           <button
-            onClick={() => toggleAllSections(!Object.values(sectionsOpen).some(v => v))}
+            onClick={() =>
+              toggleAllSections(!Object.values(sectionsOpen).some((v) => v))
+            }
             className="px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg"
           >
-            {Object.values(sectionsOpen).some(v => v) ? 'Close All' : 'Show All'}
+            {Object.values(sectionsOpen).some((v) => v)
+              ? 'Close All'
+              : 'Show All'}
           </button>
         </div>
-        
+
         {/* Agency Registration Section */}
-        <DocumentSection 
-          title="Agency Registration" 
+        <DocumentSection
+          title="Agency Registration"
           icon={FileText}
           isOpen={sectionsOpen.registration}
-          onToggle={(open) => setSectionsOpen(prev => ({ ...prev, registration: open }))}
+          onToggle={(open) =>
+            setSectionsOpen((prev) => ({ ...prev, registration: open }))
+          }
           documents={
             <>
-              <DocumentLink 
-                label="Registration Certificate" 
-                href={agency?.registrationDocuments?.certificate} 
+              <DocumentLink
+                label="Registration Certificate"
+                href={agency?.occupierDocuments?.name}
               />
-              <DocumentLink 
-                label="Business License" 
-                href={agency?.registrationDocuments?.license} 
+              <DocumentLink
+                label="Business License"
+                href={agency?.occupierDocuments?.signature}
               />
             </>
           }
         />
 
         {/* Occupier Documents Section */}
-        <DocumentSection 
-          title="Occupier Documents" 
+        <DocumentSection
+          title="Occupier Documents"
           icon={Image}
           isOpen={sectionsOpen.occupier}
-          onToggle={(open) => setSectionsOpen(prev => ({ ...prev, occupier: open }))}
+          onToggle={(open) =>
+            setSectionsOpen((prev) => ({ ...prev, occupier: open }))
+          }
           documents={
             <>
-              <DocumentLink 
+              <DocumentLink
                 label="Photo Document"
-                href={agency?.occupierDocuments?.photo} 
+                href={agency?.occupierDocuments?.photo}
               />
-              <DocumentLink 
-                label="Signature Document" 
-                href={agency?.occupierDocuments?.signature} 
+              <DocumentLink
+                label="Signature Document"
+                href={agency?.occupierDocuments?.signature}
               />
             </>
           }
         />
 
         {/* Applicant ID Proof Section */}
-        <DocumentSection 
-          title="Applicant ID Proof" 
+        <DocumentSection
+          title="Applicant ID Proof"
           icon={Fingerprint}
           isOpen={sectionsOpen.idProof}
-          onToggle={(open) => setSectionsOpen(prev => ({ ...prev, idProof: open }))}
+          onToggle={(open) =>
+            setSectionsOpen((prev) => ({ ...prev, idProof: open }))
+          }
           documents={
             <>
-              <DocumentLink 
-                label="Aadhar Card" 
-                href={agency?.applicantIdProof?.aadharCard} 
+              <DocumentLink
+                label="Aadhar Card"
+                href={agency?.applicantIdProof?.aadharCard}
               />
-              <DocumentLink 
-                label="Driving License" 
-                href={agency?.applicantIdProof?.drivingLicense} 
+              <DocumentLink
+                label="Driving License"
+                href={agency?.applicantIdProof?.drivingLicense}
               />
-              <DocumentLink 
-                label="Passport" 
-                href={agency?.applicantIdProof?.passport} 
+              <DocumentLink
+                label="Passport"
+                href={agency?.applicantIdProof?.passport}
               />
-              <DocumentLink 
-                label="PAN Card" 
-                href={agency?.applicantIdProof?.panCard} 
+              <DocumentLink
+                label="PAN Card"
+                href={agency?.applicantIdProof?.panCard}
               />
-              <DocumentLink 
-                label="Election ID" 
-                href={agency?.applicantIdProof?.electionId} 
+              <DocumentLink
+                label="Election ID"
+                href={agency?.applicantIdProof?.electionId}
               />
             </>
           }
         />
       </div>
     </div>
-  );
+  )
 };
 
 export default UserView;

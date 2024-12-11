@@ -100,45 +100,61 @@ const InspectionView = ({ params }: { params: Params }) => {
     if (type && id) {
       const fetchData = async () => {
         try {
-          let fetchedData
-          if (type === 'agency') {
-            fetchedData = await getAgency(id as string)
-          } else if (type === 'factory-license') {
-            fetchedData = await getFactoryLicense(id as string)
+          let fetchedData: IAgency | IFactoryLicenseDetails | null = null;
+
+          const isAgency = (data: any): data is IAgency =>
+            data && typeof data === "object" && "agencySpecificProperty" in data; // Adjust the property check based on your IAgency structure.
+
+          const isFactoryLicense = (data: any): data is IFactoryLicenseDetails =>
+            data && typeof data === "object" && "factorySpecificProperty" in data; // Adjust the property check based on your IFactoryLicenseDetails structure.
+
+          if (type === "agency") {
+            const agencyData = await getAgency(id as string);
+            if (!Array.isArray(agencyData) && isAgency(agencyData)) {
+              fetchedData = agencyData;
+            } else {
+              setError("Unexpected data format: received an array or invalid object for agency");
+              return;
+            }
+          } else if (type === "factory-license") {
+            const factoryLicenseData = await getFactoryLicense(id as string);
+            if (!Array.isArray(factoryLicenseData) && isFactoryLicense(factoryLicenseData)) {
+              fetchedData = factoryLicenseData;
+            } else {
+              setError("Unexpected data format: received an array or invalid object for factory-license");
+              return;
+            }
           }
+
           if (fetchedData) {
-            setData(fetchedData)
-            // Initialize all sections as closed
-            const initialSectionsState = type === 'agency' 
-              ? {
-                  registration: false,
-                  occupier: false,
-                  idProof: false,
-                  previousLicense: false,
-                  ownership: false,
-                  electricity: false,
-                  flowChart: false
-                }
-              : {
-                  factoryDetails: false
-                }
-            setSectionsOpen(initialSectionsState)
+            setData(fetchedData);
+            const initialSectionsState = {
+              registration: false,
+              occupier: false,
+              idProof: false,
+              previousLicense: false,
+              ownership: false,
+              electricity: false,
+              flowChart: false,
+              factoryDetails: false,
+            };
+            setSectionsOpen(initialSectionsState);
           } else {
-            setError('No data found')
+            setError("No data found");
           }
         } catch (error) {
-          setError(error instanceof Error ? error.message : String(error))
+          setError(error instanceof Error ? error.message : String(error));
         } finally {
-          setLoading(false)
+          setLoading(false);
         }
-      }
+      };
 
-      fetchData()
+      fetchData();
     } else {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [type, id])
-
+  }, [type, id]);
+;
   const toggleAllSections = (open: boolean) => {
     setSectionsOpen(prev => {
       const newState: {[key: string]: boolean} = {}

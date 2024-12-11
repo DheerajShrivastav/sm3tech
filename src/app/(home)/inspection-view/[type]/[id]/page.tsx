@@ -8,8 +8,8 @@ import { IFactoryLicenseDetails } from '@/models/factoryLicenseDetails.model'
 // import { useRouter } from 'next/router'
 
 interface Params {
-  type: string;
-  id: string;
+  type: string
+  id: string
 }
 
 const InspectionView = ({ params }: { params: Params }) => {
@@ -17,7 +17,7 @@ const InspectionView = ({ params }: { params: Params }) => {
   // const { type, id } = router.query
   const type = params.type
   const id = params.id
-  const [data, setData] = useState<IAgency | IFactoryLicenseDetails | null>(
+  const [data, setData] = useState<IAgency | IFactoryLicenseDetails | null | []>(
     null
   )
   const [loading, setLoading] = useState(true)
@@ -78,7 +78,99 @@ const InspectionView = ({ params }: { params: Params }) => {
           <p>Name: {(data as IAgency).occupierDocuments.name}</p>
           <p>Photo: {(data as IAgency).occupierDocuments.photo}</p>
           <p>Signature: {(data as IAgency).occupierDocuments.signature}</p>
-          {/* Render other agency details here */}
+          <h2>Applicant ID Proof</h2>
+          <p>Election ID: {(data as IAgency).applicantIdProof.electionId}</p>
+          <p>
+            Driving License: {(data as IAgency).applicantIdProof.drivingLicense}
+          </p>
+          <p>Aadhar Card: {(data as IAgency).applicantIdProof.aadharCard}</p>
+          <p>Passport: {(data as IAgency).applicantIdProof.passport}</p>
+          <p>PAN Card: {(data as IAgency).applicantIdProof.panCard}</p>
+
+          <h2>Previous Factory License</h2>
+          <p>
+            Previous Factory License:{' '}
+            {(data as IAgency).previousFactoryLicense.previousFactoryLicense}
+          </p>
+          <p>
+            Plan Approval Letter:{' '}
+            {(data as IAgency).previousFactoryLicense.planApprovalLetter}
+          </p>
+
+          <h2>Private Limited Company</h2>
+          <p>
+            List of Directors:{' '}
+            {(data as IAgency).privateLimitedCompany?.listOfDirectors}
+          </p>
+          <p>MOA: {(data as IAgency).privateLimitedCompany?.moa}</p>
+          <p>
+            Board Resolution:{' '}
+            {(data as IAgency).privateLimitedCompany?.boardResolution}
+          </p>
+          <p>Form 32: {(data as IAgency).privateLimitedCompany?.form32}</p>
+
+          <h2>List of Raw Materials</h2>
+          <p>
+            List of Raw Materials:{' '}
+            {(data as IAgency).listOfRawMaterials.listOfRawMaterials}
+          </p>
+
+          <h2>Ownership Documents</h2>
+          <p>
+            Leave and License Agreement:{' '}
+            {(data as IAgency).ownershipDocuments.leaveAndLicenseAgreement}
+          </p>
+          <p>
+            MIDC Allotment Letter:{' '}
+            {(data as IAgency).ownershipDocuments.midcAllotmentLetter}
+          </p>
+          <p>
+            7/12 Extract:{' '}
+            {(data as IAgency).ownershipDocuments.sevenTwelveExtract}
+          </p>
+          <p>Tax Receipt: {(data as IAgency).ownershipDocuments.taxReceipt}</p>
+
+          <h2>Local Authority NoC</h2>
+          <p>
+            Local Authority NoC:{' '}
+            {(data as IAgency).localAuthorityNoC.localAuthorityNoC}
+          </p>
+          <p>
+            Corporation NoC:{' '}
+            {(data as IAgency).localAuthorityNoC.corporationNoC}
+          </p>
+          <p>
+            Grampanchayat NoC:{' '}
+            {(data as IAgency).localAuthorityNoC.grampanchayatNoC}
+          </p>
+          <p>MIDC NoC: {(data as IAgency).localAuthorityNoC.midcNoC}</p>
+
+          <h2>MPCB Consent</h2>
+          <p>MPCB Consent: {(data as IAgency).mpcbConsent.mpcbConsent}</p>
+          <h2>Sketch Factory</h2>
+          <p>Sketch: {(data as IAgency).sketchFactory.sketch}</p>
+
+          <h2>Electricity Bill</h2>
+          <p>
+            Electricity Bill:{' '}
+            {(data as IAgency).electricityBill.electricityBill}
+          </p>
+          <p>
+            Load Sanction Letter:{' '}
+            {(data as IAgency).electricityBill.loadSanctionletter}
+          </p>
+
+          <h2>Acceptance Letter</h2>
+          <p>
+            Acceptance Letter:{' '}
+            {(data as IAgency).acceptanceLetter.acceptanceLetter}
+          </p>
+
+          <h2>Flow Chart</h2>
+          <p>Flow Chart: {(data as IAgency).flowChart.flowChart}</p>
+
+          <h2>Status</h2>
+          <p>Status: {(data as IAgency).status}</p>
         </>
       )}
       {type === 'factory-license' && (

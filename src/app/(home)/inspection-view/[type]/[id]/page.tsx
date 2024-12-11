@@ -208,7 +208,7 @@ const InspectionView = ({ params }: { params: Params }) => {
           <p>Local Body NOC: {(data as IFactoryLicenseDetails).localBodyNoc}</p>
           <p>Other: {(data as IFactoryLicenseDetails).other}</p>
           <p>
-            Company's Authorization Letter:{' '}
+            Company&apos;s Authorization Letter:{' '}
             {(data as IFactoryLicenseDetails).companysAuthorizationLetter}
           </p>
           <p>

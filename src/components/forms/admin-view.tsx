@@ -98,9 +98,7 @@ const AdminView = () => {
                     View Details
                   </Link>
                 </Button>
-                <Button className="bg-green-600 text-white hover:bg-green-700">
-                  Edit Agency
-                </Button>
+                
               </TableCell>
             </TableRow>
           ))}

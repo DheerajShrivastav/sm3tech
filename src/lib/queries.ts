@@ -328,8 +328,6 @@ export const updateDocument = async (
   }
 }
 
-
-
 const deleteFile = async ({ fileKey }: { fileKey: string | string[] }) => {
   try {
     const result = await utapi.deleteFiles(
@@ -343,8 +341,6 @@ const deleteFile = async ({ fileKey }: { fileKey: string | string[] }) => {
   }
 }
 
-
-
 // to do 
 export const getFactoryLicense = async (id: string): Promise<IFactoryLicenseDetails | null> => {
   try {
@@ -357,5 +353,19 @@ export const getFactoryLicense = async (id: string): Promise<IFactoryLicenseDeta
   } catch (error) {
     console.error('Error getting factory license:', error)
     throw new Error('Error getting factory license')
+  }
+}
+
+export const getAgenciesByUser = async (userId: string) => {
+  try {
+    await connectDB()
+    const agencies = await Agency.find({ user: userId })
+      .populate('user')
+      .lean()
+      .exec()
+    return JSON.parse(JSON.stringify(agencies))
+  } catch (error) {
+    console.error('Error getting agencies:', error)
+    throw new Error('Error getting agencies')
   }
 }

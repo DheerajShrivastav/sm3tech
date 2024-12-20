@@ -9,13 +9,14 @@ import SideNav from '@/components/side-nav';
 // Define the User type
 interface User {
   role: 'Admin' | 'User'; // Adjust based on your actual roles
+  _id: string; // Add the _id property
   // Add any other properties that your user object may have
 }
 
 const Page = memo(() => {
   const [user, setUser] = useState<User | null>(null); // Use the User type
   const [loading, setLoading] = useState(true);
-  const id = '66ce17fb68cfe86ae916886b';
+  
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -37,21 +38,15 @@ const Page = memo(() => {
   }
 
   const role = user?.role; // TypeScript knows user can be null
-
+  const userId = user?._id; // TypeScript knows user can be null
   return (
     <div className="">
-    
       {/* Main Content */}
       <div className="flex-1 bg-gray-100 p-6 overflow-auto">
-      {role === 'Admin' ? <AdminView /> : <UserView id={id} />}
+        {role === 'Admin' ? <AdminView /> : userId ? <UserView userId={userId} /> : <div>User ID not found</div>}
       </div>
     </div>
-
-
-
-
-
-  );
+  )
 });
 
 // Set display name for the memoized component

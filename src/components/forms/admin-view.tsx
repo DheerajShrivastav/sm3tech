@@ -49,56 +49,42 @@ const AdminView = () => {
   }, [])
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div className="flex justify-center items-center min-h-screen text-gray-600 font-sora ">Loading...</div>
   }
 
   if (error) {
-    return <div>Error: {error}</div>
+    return <div className="flex justify-center items-center min-h-screen text-red-500">Error: {error}</div>
   }
 
   const renderAgencies = () => {
     return (
-      <Table className="w-full border border-gray-200 rounded-lg shadow-sm font-sora">
-        <TableCaption className="text-left text-gray-600 font-light">
-          List of Agencies
-        </TableCaption>
+      <Table className="w-full border border-gray-100  shadow-lg rounded-lg  font-sora">
         <TableHeader>
-          <TableRow className="bg-gray-100">
-            <TableHead className="py-3 px-4 font-medium text-gray-700">
+          <TableRow className="bg-blue-600 text-white">
+            <TableHead className="py-3 px-6 font-semibold text-base text-white">
               Agency Name
             </TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700">
-              Agency Email
-            </TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700">
-              Agency Address
-            </TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700">
-              Agency Phone
-            </TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700 text-right">
-              Actions
+            <TableHead className="py-3 px-6 font-semibold text-white text-base text-center">
+              View Agency
             </TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
           {(agencies as IAgency[]).map((agency) => (
-            <TableRow key={agency._id as Key} className="border-t">
-              <TableCell className="py-4 px-4 font-medium text-gray-900">
+            <TableRow
+              key={agency._id as Key}
+              className="border border-gray-100 shadow-sm hover:bg-gray-100 transition duration-150 ease-in-out"
+            >
+              <TableCell className="py-4 px-6 font-medium text-gray-900">
                 {agency?.occupierDocuments.name || 'N/A'}
               </TableCell>
-              <TableCell className="py-4 px-4 text-gray-600">
-                {agency?.applicantIdProof.aadharCard || 'N/A'}
-              </TableCell>
-
-              <TableCell className="py-4 px-4 text-right">
-                <Button className="mr-2 bg-indigo-600 text-white hover:bg-indigo-700">
-                  <Link href={`/inspection-view/agency/${agency?._id}`}>
+              <TableCell className="py-4 px-6 text-center">
+                <Link href={`/inspection-view/agency/${agency?._id}`}>
+                  <Button className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md">
                     View Details
-                  </Link>
-                </Button>
-                
+                  </Button>
+                </Link>
               </TableCell>
             </TableRow>
           ))}
@@ -108,8 +94,8 @@ const AdminView = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+    <div className="max-w-5xl mx-auto p-8 bg-gray-50 shadow-lg rounded-lg">
+      <h2 className="text-3xl font-semibold tracking-tight text-blue-800 mb-8 font-sora text-left">
         Admin View: Agencies
       </h2>
       {renderAgencies()}

@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { v4 } from 'uuid'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -139,10 +139,11 @@ const getIconForDocument = (name: string) => {
   }
   return icons[name as keyof typeof icons] || icons.default
 }
-
 const AgencyDetails: React.FC<AgencyDetailsProps> = ({ data }) => {
   const { toast } = useToast()
   const router = useRouter()
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false)
+
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -150,16 +151,6 @@ const AgencyDetails: React.FC<AgencyDetailsProps> = ({ data }) => {
         name: data?.occupierDocuments?.name || '',
         photo: data?.occupierDocuments?.photo || '',
         signature: data?.occupierDocuments?.signature || '',
-      },
-      privateLimitedCompany: {
-        listOfDirectors: data?.privateLimitedCompany?.listOfDirectors || '',
-      },
-      applicantIdProof: {
-        electionId: data?.applicantIdProof?.electionId || '',
-        drivingLicense: data?.applicantIdProof?.drivingLicense || '',
-        aadharCard: data?.applicantIdProof?.aadharCard || '',
-        passport: data?.applicantIdProof?.passport || '',
-        panCard: data?.applicantIdProof?.panCard || '',
       },
     },
   })
@@ -173,13 +164,13 @@ const AgencyDetails: React.FC<AgencyDetailsProps> = ({ data }) => {
   ) => {
     const Icon = getIconForDocument(field)
     return (
-      <div className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-2">
+      <div className="w-full md:w-1/2 lg:w-1/3 p-2">
         <FormField
           control={form.control}
           name={`${section}.${field}` as any}
           render={({ field: formField }) => (
             <FormItem>
-              <div className="bg-gradient-to-br from-blue-50 to-white p-4 rounded-xl border border-blue-100 shadow-sm h-full hover:shadow-md transition-all duration-200">
+              <div className="bg-gradient-to-br from-blue-50 to-white p-4 rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-all duration-200">
                 <div className="flex items-center space-x-2 mb-3">
                   <div className="bg-blue-100 p-2 rounded-lg">
                     <Icon className="h-4 w-4 text-blue-600" />
@@ -191,7 +182,7 @@ const AgencyDetails: React.FC<AgencyDetailsProps> = ({ data }) => {
                     )}
                   </h3>
                 </div>
-                <div className=" rounded-lg p-3 transition-colors hover:border-blue-400">
+                <div className="rounded-lg p-3 transition-colors hover:border-blue-400">
                   <FileUpload
                     apiEndpoint={apiEndpoint as 'pdfUploader' | 'imageUploader'}
                     onChange={formField.onChange}
@@ -208,95 +199,56 @@ const AgencyDetails: React.FC<AgencyDetailsProps> = ({ data }) => {
   }
 
   const handleSubmit = async (values: z.infer<typeof FormSchema>) => {
-    console.log('first')
     try {
-      console.log(values)
-      let newUserData
-      let custId
-      if (data?.id) {
-        const bodyData = {
-          occupierDocuments: values.occupierDocuments,
-          applicantIdProof: values.applicantIdProof,
-          previousFactoryLicense: values.previousFactoryLicense,
-          privateLimitedCompany: values.privateLimitedCompany,
-          listOfRawMaterials: values.listOfRawMaterials,
-          ownershipDocuments: values.ownershipDocuments,
-          localAuthorityNoC: values.localAuthorityNoC,
-          mpcbConsent: values.mpcbConsent,
-          sketchFactory: values.sketchFactory,
-          electricityBill: values.electricityBill,
-          acceptanceLetter: values.acceptanceLetter,
-          flowChart: values.flowChart,
-        }
-      }
-
-      newUserData = await initUser({})
-      // if (!data?.id) return
-      console.log('here is the ')
-      const response = await upsertAgency({
+      await upsertAgency({
         id: data?.id ? data.id : v4(),
-        user: (await getUser())?._id,
         occupierDocuments: values.occupierDocuments,
-        applicantIdProof: values.applicantIdProof,
-        previousFactoryLicense: values.previousFactoryLicense,
-        privateLimitedCompany: values.privateLimitedCompany,
-        listOfRawMaterials: values.listOfRawMaterials,
-        ownershipDocuments: values.ownershipDocuments,
-        localAuthorityNoC: values.localAuthorityNoC,
-        mpcbConsent: values.mpcbConsent,
-        sketchFactory: values.sketchFactory,
-        electricityBill: values.electricityBill,
-        acceptanceLetter: values.acceptanceLetter,
-        flowChart: values.flowChart,
       })
-      toast({
-        title: 'Created Agency',
-      })
-      console.log('after and berofre the resposnce')
-      if (data?.id) return router.push('/inspection-view')
-      if (response) {
-        return router.push('/inspection-view')
-      }
+      setShowSuccessPopup(true)
+      toast({ title: 'Success!', description: 'Agency created successfully.' })
     } catch (error) {
-      console.log(error)
       toast({
         variant: 'destructive',
-        title: 'Oppse!',
-        description: 'could not create your agency',
+        title: 'Error',
+        description: 'Could not create the agency.',
       })
     }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-4 md:p-8 font-sora">
-      {/* Decorative elements */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute -left-4 top-20 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl" />
-        <div className="absolute right-10 bottom-10 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl" />
-      </div>
+      {showSuccessPopup && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <h2 className="text-lg font-bold text-gray-900">
+              Submission Successful!
+            </h2>
+            <p className="text-gray-600 mt-2">Your documents have been submitted.</p>
+            <Button
+              onClick={() => setShowSuccessPopup(false)}
+              className="mt-4 bg-blue-600 text-white hover:bg-blue-700"
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      )}
 
       <AlertDialog>
-        <Card className="w-full bg-white/80 backdrop-blur-lg shadow-xl border border-blue-100 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 rounded-bl-full" />
-
+        <Card className="w-full bg-white/80 backdrop-blur-lg shadow-xl border border-blue-100">
           <CardHeader className="space-y-4 pb-8">
             <div className="flex items-center space-x-3">
               <div className="h-12 w-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
                 <Building2 className="h-6 w-6 text-white" />
               </div>
-              <div>
-                <CardTitle className="text-2xl font-bold font-sora text-gray-900">
-                  Agency Information
-                </CardTitle>
-                <p className="text-gray-600 text-sm mt-1">
-                  Complete your agency documentation
-                </p>
-              </div>
+              <CardTitle className="text-2xl font-bold text-gray-900">
+                Agency Information
+              </CardTitle>
             </div>
           </CardHeader>
 
           <CardContent>
-            <Form {...form}>
+          <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-8"
@@ -321,7 +273,7 @@ const AgencyDetails: React.FC<AgencyDetailsProps> = ({ data }) => {
                             <Input
                               placeholder="Your name"
                               {...field}
-                              className="bg-white border-blue-200 focus:border-blue-400"
+                              className="bg-white text-black "
                             />
                           </FormControl>
                           <FormMessage className="text-red-500" />
@@ -341,7 +293,7 @@ const AgencyDetails: React.FC<AgencyDetailsProps> = ({ data }) => {
                             <Input
                               placeholder="Enter the Names"
                               {...field}
-                              className="bg-white border-blue-200 focus:border-blue-400"
+                              className="bg-white text-black "
                             />
                           </FormControl>
                           <FormMessage className="text-red-500" />
@@ -524,9 +476,9 @@ const AgencyDetails: React.FC<AgencyDetailsProps> = ({ data }) => {
                 <div className="pt-8 flex justify-end">
                   <Button
                     type="submit"
-                    className=" bg-blue-600 hover:bg-blue-700 text-sm text-white font-semibold p-6  rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+                    className="bg-blue-600 text-sm text-white font-semibold p-6 rounded-xl shadow-lg hover:bg-blue-700 hover: "
                   >
-                    Save Agency Information
+                    Submit Documents
                   </Button>
                 </div>
               </form>

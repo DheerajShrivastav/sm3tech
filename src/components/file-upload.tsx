@@ -46,7 +46,7 @@ const FileUpload = ({ apiEndpoint, onChange, value }: Props) => {
     )
   }
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-white px-0">
       <UploadDropzone
         endpoint={apiEndpoint}
         onClientUploadComplete={(res) => {

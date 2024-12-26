@@ -186,7 +186,7 @@ const InspectionView = ({ params }: { params: Params }) => {
           </div>
           <button
             onClick={() => toggleAllSections(!Object.values(sectionsOpen).some(v => v))}
-            className="px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg"
+            className="px-2 lg:px-4 py-1 md:py-2 text-xs md:text-sm bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg"
           >
             {Object.values(sectionsOpen).some(v => v) ? 'Close All' : 'Show All'}
           </button>

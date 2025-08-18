@@ -1,47 +1,51 @@
-import React from 'react'
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
+import { FileText } from "lucide-react";
 
-const page = () => {
-  return (
-    <div>page</div>
-  )
-}
-
-// Dummy data for services (replace with real data fetching if needed)
 const services = [
-    { id: 1, name: 'Web Development', slug: 'web-development' },
-    { id: 2, name: 'App Development', slug: 'app-development' },
-    { id: 3, name: 'SEO Optimization', slug: 'seo-optimization' },
+    // Factory Act
+    { name: "Factory License", slug: "factory-act/factory-license" },
+    { name: "Plan Approval", slug: "factory-act/plan-approval" },
+    { name: "Safety Audit Report", slug: "factory-act/safety-audit-report" },
+    { name: "Stability Certificate", slug: "factory-act/stability-certificate" },
+    { name: "Testing & Calibration", slug: "factory-act/testing-calibration" },
+    // MPCB
+    { name: "MPCB Compliance Report", slug: "mpcb/compliance-report" },
+    { name: "MPCB Consent to Establish", slug: "mpcb/consent-to-establish" },
+    { name: "MPCB Consent to Operate", slug: "mpcb/consent-to-operate" },
+    // Add more services here as you add folders/routes
 ];
 
-// Example styling (replace with your actual home page styles)
-const serviceCardStyle = {
-    border: '1px solid #e5e7eb',
-    borderRadius: '8px',
-    padding: '1.5rem',
-    marginBottom: '1rem',
-    background: '#fff',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-    transition: 'box-shadow 0.2s',
-};
-
-const serviceListStyle = {
-    maxWidth: '600px',
-    margin: '2rem auto',
-    padding: '1rem',
-};
-
-export default function Page() {
+export default function AllServicesPage() {
     return (
-        <div style={serviceListStyle}>
-            <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '2rem' }}>Our Services</h1>
-            {services.map(service => (
-                <Link key={service.id} href={`/services/${service.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <div style={serviceCardStyle}>
-                        <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{service.name}</h2>
-                    </div>
-                </Link>
-            ))}
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-3xl mx-auto">
+                <h1 className="font-sora text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-700">
+                    All Services
+                </h1>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {services.map((service, idx) => (
+                        <Link key={idx} href={`/services/${service.slug}`} className="group">
+                            <div
+                                className="bg-gradient-to-br from-blue-50 to-blue-100 hover:shadow-xl transition-all duration-300 cursor-pointer border border-blue-100 rounded-xl p-6 flex items-center gap-4 hover:scale-105"
+                                tabIndex={0}
+                                role="link"
+                                aria-label={service.name}
+                            >
+                                <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-lg shadow-md">
+                                    <FileText className="h-6 w-6 text-white group-hover:animate-pulse" />
+                                </div>
+                                <div>
+                                    <h2 className="font-sora text-lg font-semibold text-gray-900 mb-1">
+                                        {service.name}
+                                    </h2>
+                                    <p className="text-gray-500 text-sm">View details</p>
+                                </div>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }

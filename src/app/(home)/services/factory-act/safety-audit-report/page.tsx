@@ -1,9 +1,15 @@
+'use client'
 import React from 'react'
 
-const page = () => {
+import SafetyAuditReport from '@/components/forms/safety-audit-report'
+type Props = {}
+
+const factoryLicense = (props: Props) => {
   return (
-    <div>page</div>
+    <div>
+      <SafetyAuditReport />
+    </div>
   )
 }
 
-export default page
+export default factoryLicense

@@ -31,14 +31,52 @@ const DocumentLink = ({ label, href }: { label: string; href?: string }) => (
       {label}
     </span>
     {href ? (
-      <a 
-        href={href} 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg"
-      >
-        View
-      </a>
+      <div className="flex gap-2">
+        <a 
+          href={href} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg"
+        >
+          View
+        </a>
+        <a
+          href={href}
+          download
+          onClick={e => {
+            // For cross-origin files, force download via fetch and blob
+            if (href && !href.startsWith(window.location.origin)) {
+              e.preventDefault();
+              fetch(href)
+          .then(res => res.blob())
+          .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = label.replace(/\s+/g, '_');
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+          });
+            }
+          }}
+          className="px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg"
+        >
+          Download
+        </a>
+        <button
+          type="button"
+          onClick={() => {
+            if (href) {
+              navigator.clipboard.writeText(href);
+            }
+          }}
+          className="px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg"
+        >
+          Copy Link
+        </button>
+      </div>
     ) : (
       <span className="px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm text-gray-500">Not Available</span>
     )}

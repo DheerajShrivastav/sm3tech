@@ -1,9 +1,16 @@
+'use client'
 import React from 'react'
 
-const page = () => {
+import SafetyAuditReportForm from '@/components/forms/safety-audit-report'
+import ConsentToOperate from '@/components/forms/consent-to-operate'
+type Props = {}
+
+const ConsentToOperatePage = (props: Props) => {
   return (
-    <div>page</div>
+    <div>
+      <ConsentToOperate />
+    </div>
   )
 }
 
-export default page
+export default ConsentToOperatePage

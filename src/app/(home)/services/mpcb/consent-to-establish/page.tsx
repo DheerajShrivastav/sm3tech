@@ -1,9 +1,15 @@
+'use client'
 import React from 'react'
 
-const page = () => {
+import ConsentToEstablish from '@/components/forms/consent-to-establish'
+type Props = {}
+
+const FactoryLicense = (props: Props) => {
   return (
-    <div>page</div>
+    <div>
+      <ConsentToEstablish />
+    </div>
   )
 }
 
-export default page
+export default FactoryLicense

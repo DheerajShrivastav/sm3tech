@@ -108,7 +108,7 @@ const FactoryLicenseDetails = ({ data }: Props) => {
                 </div>
                 <div className=" rounded-lg p-3 transition-colors hover:border-blue-400">
                   <FileUpload
-                    apiEndpoint="imageUploader"
+                    apiEndpoint="pdfUploader"
                     onChange={field.onChange}
                     value={field.value || ''}
                   />

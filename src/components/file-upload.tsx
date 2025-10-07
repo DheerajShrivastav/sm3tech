@@ -1,5 +1,5 @@
 'use client'
-import { FileIcon, X } from 'lucide-react'
+import { FileIcon, X, Upload } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 import { UploadDropzone } from '@/lib/uploadthing'
@@ -38,15 +38,19 @@ const FileUpload = ({ apiEndpoint, onChange, value }: Props) => {
             </a>
           </div>
         )}
-        <button onClick={() => onChange('')} type="button">
+        <button 
+          onClick={() => onChange('')} 
+          type="button"
+          className="mt-2 flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+        >
           <X className="h-4 w-4" />
-          File Uploaded
+          Remove File
         </button>
       </div>
     )
   }
   return (
-    <div className="w-full bg-white px-0">
+    <div className="w-full bg-white">
       <UploadDropzone
         endpoint={apiEndpoint}
         onClientUploadComplete={(res) => {
@@ -54,6 +58,33 @@ const FileUpload = ({ apiEndpoint, onChange, value }: Props) => {
         }}
         onUploadError={(error: Error) => {
           console.log(error)
+        }}
+        className="ut-button:bg-blue-600 ut-button:ut-readying:bg-blue-600/50 
+                   ut-label:text-lg ut-label:text-gray-700 ut-label:font-medium
+                   ut-allowed-content:ut-uploading:text-red-300
+                   ut-button:ut-uploading:bg-blue-600/50 ut-button:ut-uploading:after:bg-blue-400
+                   border-2 border-dashed border-gray-300 hover:border-blue-400 transition-colors"
+        content={{
+          label: () => (
+            <div className="flex flex-col items-center gap-2">
+              <Upload className="h-8 w-8 text-blue-600" />
+              <span className="text-sm font-medium text-gray-700">
+                {apiEndpoint === 'imageUploader' ? 'Upload Image' : 'Upload PDF'}
+              </span>
+              <span className="text-xs text-gray-500">
+                {apiEndpoint === 'imageUploader' 
+                  ? 'PNG, JPG, JPEG up to 4MB' 
+                  : 'PDF up to 16MB'
+                }
+              </span>
+            </div>
+          ),
+          allowedContent: () => '',
+          button: ({ ready, isUploading }) => {
+            if (isUploading) return 'Uploading...';
+            if (ready) return 'Choose File';
+            return 'Getting Ready...';
+          }
         }}
       />
     </div>

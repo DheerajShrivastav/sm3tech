@@ -68,3 +68,36 @@
     @apply font-sora bg-background text-foreground;
   }
 }
+
+/* Custom UploadThing styles */
+@layer components {
+  .uploadthing-container {
+    @apply w-full;
+  }
+
+  /* Override default UploadThing dropzone styles */
+  [data-ut-element="dropzone"] {
+    @apply min-h-32 rounded-lg border-2 border-dashed border-gray-300 hover:border-blue-400 bg-gray-50/50 transition-colors;
+  }
+
+  [data-ut-element="label"] {
+    @apply text-sm font-medium text-gray-700 flex flex-col items-center justify-center gap-2;
+  }
+
+  [data-ut-element="button"] {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow-sm hover:shadow-md;
+  }
+
+  [data-ut-element="allowed-content"] {
+    @apply text-xs text-gray-500 mt-1;
+  }
+
+  /* Custom file upload card styles */
+  .file-upload-card {
+    @apply bg-gradient-to-br from-blue-50 to-white p-4 rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-all duration-200;
+  }
+
+  .file-upload-card:hover {
+    @apply border-blue-200 shadow-lg;
+  }
+}

@@ -4,6 +4,7 @@ import { FileText } from "lucide-react";
 
 const services = [
     // Factory Act
+    { name: "Agency Information", slug: "factory-act/agency-information" },
     { name: "Factory License", slug: "factory-act/factory-license" },
     { name: "Plan Approval", slug: "factory-act/plan-approval" },
     { name: "Safety Audit Report", slug: "factory-act/safety-audit-report" },

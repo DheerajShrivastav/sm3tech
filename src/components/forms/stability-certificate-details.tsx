@@ -124,6 +124,8 @@ const StabilityCertificateDetails = () => {
         required: boolean = true
     ) => {
         const Icon = getIconForDocument(name)
+        // Use imageUploader only for photographs (actual photos), pdfUploader for all documents
+        const apiEndpoint = name === 'photographs' ? 'imageUploader' : 'pdfUploader'
         return (
             <div className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-2">
                 <FormField
@@ -142,7 +144,7 @@ const StabilityCertificateDetails = () => {
                                 </div>
                                 <div className="rounded-lg p-3 transition-colors hover:border-blue-400">
                                     <FileUpload
-                                        apiEndpoint="imageUploader"
+                                        apiEndpoint={apiEndpoint}
                                         onChange={field.onChange}
                                         value={field.value || ''}
                                     />

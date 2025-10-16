@@ -1,6 +1,6 @@
 import { auth } from '@clerk/nextjs/server'
 import { User } from '@/models/user.model'
-import { connectToDB } from '@/lib/db'
+import { connectDB } from '@/lib/db'
 
 export interface UserRole {
   userId: string
@@ -10,7 +10,7 @@ export interface UserRole {
 
 export async function getUserRole(userId: string): Promise<UserRole | null> {
   try {
-    await connectToDB()
+    await connectDB()
     
     const user = await User.findOne({ clerkId: userId })
     
@@ -63,7 +63,7 @@ export async function createOrUpdateUser(userData: {
   role?: 'Admin' | 'User'
 }) {
   try {
-    await connectToDB()
+    await connectDB()
     
     const existingUser = await User.findOne({ clerkId: userData.clerkId })
     

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { User } from '@/models/user.model'
-import { connectToDB } from '@/lib/db'
+import { connectDB } from '@/lib/db'
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    await connectToDB()
+    await connectDB()
 
     // Find user by email and update role
     const user = await User.findOneAndUpdate(
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    await connectToDB()
+    await connectDB()
 
     const users = await User.find({}, {
       clerkId: 1,

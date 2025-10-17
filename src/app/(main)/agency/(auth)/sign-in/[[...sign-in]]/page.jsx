@@ -46,63 +46,108 @@ const SignInPage = () => {
             <div className="max-w-md mx-auto lg:mx-0">
             <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-lg">
               <CardContent className="p-6">
-                {/* Welcome Header */}
+                {/* Welcome Header - Clean */}
                 <div className="text-center mb-6">
-                  <h2 className="text-xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-1">Welcome Back</h2>
                   <p className="text-gray-600 text-sm">Sign in to access your dashboard</p>
                 </div>
 
-                {/* Access Information Card - Compact */}
-                <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-blue-100 mb-6">
-                  <CardContent className="p-4">
-                    <div className="flex items-center mb-2">
-                      <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2 rounded-xl mr-3">
-                        <Shield className="h-4 w-4 text-white" />
-                      </div>
-                      <h3 className="font-bold text-blue-900 text-sm">Access Information</h3>
+                {/* Access Information Card - Clean Design */}
+                <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl">
+                  <div className="flex items-start space-x-3">
+                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2 rounded-lg flex-shrink-0">
+                      <Shield className="h-4 w-4 text-white" />
                     </div>
-                    <p className="text-blue-700 text-xs mb-2">
-                      Both admin and user accounts use the same login. Your access level is determined by your role.
-                    </p>
-                    <ul className="space-y-1">
-                      <li className="flex items-center text-blue-700">
-                        <CheckCircle className="h-3 w-3 text-blue-500 mr-2 flex-shrink-0" />
-                        <span className="text-xs">Secure authentication</span>
-                      </li>
-                      <li className="flex items-center text-blue-700">
-                        <CheckCircle className="h-3 w-3 text-blue-500 mr-2 flex-shrink-0" />
-                        <span className="text-xs">Role-based access</span>
-                      </li>
-                    </ul>
-                  </CardContent>
-                </Card>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-blue-900 text-sm mb-2">Access Information</h3>
+                      <p className="text-blue-800 text-xs mb-3 leading-relaxed">
+                        Both admin and user accounts use the same login. Your access level is determined by your role.
+                      </p>
+                      <div className="flex flex-wrap gap-3">
+                        <div className="flex items-center">
+                          <CheckCircle className="h-3 w-3 text-blue-600 mr-1.5 flex-shrink-0" />
+                          <span className="text-xs text-blue-700">Secure authentication</span>
+                        </div>
+                        <div className="flex items-center">
+                          <CheckCircle className="h-3 w-3 text-blue-600 mr-1.5 flex-shrink-0" />
+                          <span className="text-xs text-blue-700">Role-based access</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-                {/* Sign In Form - Compact */}
-                <SignIn 
-                  appearance={{
-                    elements: {
-                      rootBox: "w-full",
-                      card: "bg-transparent shadow-none border-none p-0",
-                      headerTitle: "hidden",
-                      headerSubtitle: "hidden",
-                      formFieldLabel: "text-gray-700 font-semibold text-sm mb-1",
-                      formFieldInput: "w-full bg-gray-50 border border-gray-300 rounded-xl py-2.5 px-3 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200",
-                      formButtonPrimary: "w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2.5 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300",
-                      socialButtonsBlockButton: "w-full bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl py-2.5 font-medium shadow-sm hover:shadow-md transition-all duration-200",
-                      footerActionLink: "text-blue-600 hover:text-blue-700 font-semibold text-sm",
-                      formFieldAction: "text-blue-600 hover:text-blue-700 font-medium text-sm",
-                      footer: "hidden",
-                      footerAction: "hidden",
-                      footerActionText: "hidden"
-                    }
-                  }}
-                />
+                {/* Sign In Form - Clean Design */}
+                <div className="space-y-4">
+                  <SignIn 
+                    appearance={{
+                      elements: {
+                        // Container & Layout
+                        rootBox: "w-full",
+                        card: "bg-transparent shadow-none border-none p-0",
+                        
+                        // Hide Default Headers
+                        headerTitle: "hidden",
+                        headerSubtitle: "hidden",
+                        
+                        // Social Login Buttons
+                        socialButtons: "w-full mb-4",
+                        socialButtonsBlockButton: `
+                          w-full bg-white border border-gray-300 text-gray-700 
+                          hover:bg-gray-50 rounded-xl py-3 px-4 font-medium 
+                          shadow-sm hover:shadow-md transition-all duration-200 mb-3
+                        `,
+                        socialButtonsBlockButtonText: "font-medium text-gray-700",
+                        
+                        // Form Divider
+                        dividerLine: "bg-gray-300",
+                        dividerText: "text-gray-500 text-sm",
+                        
+                        // Form Fields
+                        formFieldRow: "mb-4 flex flex-col items-center",
+                        formFieldLabel: "text-center  font-semibold text-sm mb-2 w-full",
+                        formFieldInput: `
+                          w-full bg-gray-50 border border-gray-300 rounded-xl
+                          py-3 px-4 text-left text-gray-900 placeholder:text-gray-500
+                          focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                          transition-all duration-200 text-sm
+                        `,
+                        
+                        // Primary Submit Button
+                        formButtonPrimary: `
+                          w-full bg-gradient-to-r from-blue-600 to-indigo-600 
+                          hover:from-blue-700 hover:to-indigo-700 text-white font-semibold 
+                          py-3 px-6 rounded-xl shadow-lg hover:shadow-xl 
+                          transition-all duration-300 mt-4
+                        `,
+                        
+                        // Form Links & Actions
+                        footerActionLink: "text-blue-600 hover:text-blue-700 font-medium text-sm",
+                        formFieldAction: "text-blue-600 hover:text-blue-700 font-medium text-sm",
+                        formResendCodeLink: "text-blue-600 hover:text-blue-700 text-sm",
+                        
+                        // Status Messages
+                        formFieldSuccessText: "text-green-600 text-sm",
+                        formFieldErrorText: "text-red-600 text-sm",
+                        
+                        // Hide Unwanted Elements
+                        footer: "hidden",
+                        footerAction: "hidden",
+                        footerActionText: "hidden",
+                        identityPreview: "hidden"
+                      },
+                      layout: {
+                        socialButtonsPlacement: "top"
+                      }
+                    }}
+                  />
+                </div>
 
-                {/* Testing Link */}
-                <div className="mt-4 text-center">
+                {/* Testing Link - Clean */}
+                <div className="mt-4 pt-4 border-t border-gray-200 text-center">
                   <a 
                     href="/test-admin" 
-                    className="inline-flex items-center text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                    className="inline-flex items-center text-xs text-blue-600 hover:text-blue-700 font-medium transition-colors"
                   >
                     Need to test admin features?
                     <ArrowRight className="ml-1 h-3 w-3" />

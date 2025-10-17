@@ -1,0 +1,91 @@
+/* 
+  Example: How to style Clerk components with normal CSS
+  This shows you the "normal" way instead of the appearance prop
+*/
+
+/* Container for the sign-in form */
+.clerk-signin-wrapper {
+  width: 100%;
+}
+
+/* Style the main sign-in button */
+.clerk-signin-wrapper button[type="submit"] {
+  width: 100%;
+  background: linear-gradient(to right, #2563eb, #4f46e5);
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  border: none;
+}
+
+.clerk-signin-wrapper button[type="submit"]:hover {
+  background: linear-gradient(to right, #1d4ed8, #4338ca);
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Style form inputs */
+.clerk-signin-wrapper input {
+  width: 100%;
+  background-color: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #111827;
+  transition: all 0.2s;
+}
+
+.clerk-signin-wrapper input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Style form labels */
+.clerk-signin-wrapper label {
+  color: #374151;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* Style Google/social login buttons */
+.clerk-signin-wrapper button[data-provider] {
+  width: 100%;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  font-weight: 500;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+}
+
+.clerk-signin-wrapper button[data-provider]:hover {
+  background-color: #f9fafb;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+/* Style links */
+.clerk-signin-wrapper a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.clerk-signin-wrapper a:hover {
+  color: #1d4ed8;
+}
+
+/* Hide elements we don't want */
+.clerk-signin-wrapper [data-clerk-element="footer"],
+.clerk-signin-wrapper [data-clerk-element="footerAction"],
+.clerk-signin-wrapper [data-clerk-element="headerTitle"],
+.clerk-signin-wrapper [data-clerk-element="headerSubtitle"] {
+  display: none !important;
+}

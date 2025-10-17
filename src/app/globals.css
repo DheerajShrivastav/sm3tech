@@ -100,4 +100,81 @@
   .file-upload-card:hover {
     @apply border-blue-200 shadow-lg;
   }
+
+  /* Hide Clerk development mode elements - Comprehensive approach */
+  .cl-devModeNotice,
+  .cl-devModeWarning,
+  .cl-badge,
+  .cl-alert,
+  .cl-warning,
+  .cl-footer,
+  .cl-footerAction,
+  .cl-footerActionText,
+  .cl-footerActionLink,
+  .cl-internal,
+  .cl-poweredByClerk,
+  .cl-clerkLogo,
+  [data-clerk-element="devModeNotice"],
+  [data-clerk-element="devModeWarning"],
+  [data-clerk-element="badge"],
+  [data-clerk-element="alert"],
+  [data-clerk-element="warning"],
+  [data-clerk-element="footer"],
+  [data-clerk-element="footerAction"],
+  [data-clerk-element="internal"],
+  [data-clerk-element="poweredByClerk"],
+  [data-clerk-element="clerkLogo"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Hide any development banners or notices */
+  .clerk-dev-banner,
+  .clerk-development-notice,
+  [class*="devMode"],
+  [class*="development"],
+  [class*="Development"],
+  div[class*="powered"],
+  div[class*="Powered"],
+  span[class*="secured"],
+  span[class*="Secured"] {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Clean up Clerk form styling */
+  .cl-formFieldWarningText,
+  .cl-formFieldSuccessText {
+    display: none !important;
+  }
+
+  /* Hide any text containing "Development mode" or "Secured by" */
+  *:contains("Development mode"),
+  *:contains("development mode"),
+  *:contains("Secured by"),
+  *:contains("secured by") {
+    display: none !important;
+  }
+
+  /* Target specific Clerk footer elements */
+  .cl-signIn-footer,
+  .cl-signUp-footer,
+  .cl-card-footer,
+  .cl-footer-text {
+    display: none !important;
+  }
+
+  /* Hide Clerk branding completely */
+  [class*="clerk-logo"],
+  [class*="clerkLogo"],
+  [class*="powered-by"],
+  [class*="poweredBy"] {
+    display: none !important;
+  }
 }

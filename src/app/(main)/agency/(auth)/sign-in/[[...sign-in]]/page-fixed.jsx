@@ -1,13 +1,13 @@
-import { SignUp } from '@clerk/nextjs'
+import { SignIn } from '@clerk/nextjs'
 import React from 'react'
 import { Building2, Shield, ArrowRight } from 'lucide-react'
 
 export const dynamic = 'force-dynamic';
 
-const SignUpPage = () => {
+const SignInPage = () => {
   return (
     <div className="min-h-screen bg-white w-full">
-      {/* Hero Section matching your homepage */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-indigo-50">
         <div className="absolute inset-0">
           <div className="absolute top-0 left-0 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -15,7 +15,7 @@ const SignUpPage = () => {
         </div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          {/* Header matching your homepage */}
+          {/* Header */}
           <div className="text-center mb-12">
             <div className="flex justify-center items-center mb-6">
               <div className="bg-gradient-to-br from-blue-600 to-indigo-600 p-4 rounded-2xl shadow-lg">
@@ -34,17 +34,17 @@ const SignUpPage = () => {
             </p>
             
             <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-              Create your account to access industrial compliance tools
+              Sign in to access your industrial compliance dashboard
             </p>
           </div>
 
-          {/* Sign Up Form Container */}
+          {/* Sign In Form Container */}
           <div className="max-w-md mx-auto">
             <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
               {/* Welcome Header */}
               <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Get Started</h2>
-                <p className="text-gray-600">Create your account to access the platform</p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+                <p className="text-gray-600">Sign in to access your dashboard</p>
               </div>
 
               {/* Access Information Card */}
@@ -53,50 +53,35 @@ const SignUpPage = () => {
                   <div className="bg-blue-100 p-2 rounded-lg mr-3">
                     <Shield className="h-4 w-4 text-blue-600" />
                   </div>
-                  <h3 className="font-semibold text-blue-900">New User Information</h3>
+                  <h3 className="font-semibold text-blue-900">Access Information</h3>
                 </div>
                 <p className="text-blue-700 text-sm">
-                  All new accounts start with User access. Admin privileges are granted by existing administrators.
+                  Both admin and user accounts use the same login. Your access level is determined by your role in the system.
                 </p>
               </div>
 
-              {/* Clerk Sign Up Component - Simple Styling */}
-              <div className="clerk-signup-wrapper">
-                <SignUp
-                  appearance={{
-                    elements: {
-                      // Basic container styling
-                      rootBox: "w-full",
-                      card: "bg-transparent shadow-none border-none p-0",
-                      
-                      // Hide default headers since we have our own
-                      headerTitle: "hidden",
-                      headerSubtitle: "hidden",
-                      
-                      // Style the form inputs to match our design
-                      formFieldLabel: "text-gray-700 font-semibold text-sm mb-2",
-                      formFieldInput: "w-full bg-gray-50 border border-gray-300 rounded-xl py-3 px-4 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-                      
-                      // Style the main sign-up button
-                      formButtonPrimary: "w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200",
-                      
-                      // Style Google/social login buttons
-                      socialButtonsBlockButton: "w-full bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl py-3 font-medium shadow-sm hover:shadow-md transition-all duration-200",
-                      
-                      // Style links and small elements
-                      footerActionLink: "text-blue-600 hover:text-blue-700 font-semibold",
-                      formFieldAction: "text-blue-600 hover:text-blue-700 font-medium",
-                      
-                      // Hide footer elements we don't want
-                      footer: "hidden",
-                      footerAction: "hidden",
-                      footerActionText: "hidden"
-                    }
-                  }}
-                />
-              </div>
+              {/* Sign In Form - Simplified Styling */}
+              <SignIn 
+                appearance={{
+                  elements: {
+                    rootBox: "w-full",
+                    card: "bg-transparent shadow-none border-none p-0",
+                    headerTitle: "hidden",
+                    headerSubtitle: "hidden",
+                    formFieldLabel: "text-gray-700 font-semibold text-sm mb-2",
+                    formFieldInput: "w-full bg-gray-50 border border-gray-300 rounded-xl py-3 px-4 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+                    formButtonPrimary: "w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200",
+                    socialButtonsBlockButton: "w-full bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl py-3 font-medium shadow-sm hover:shadow-md transition-all duration-200",
+                    footerActionLink: "text-blue-600 hover:text-blue-700 font-semibold",
+                    formFieldAction: "text-blue-600 hover:text-blue-700 font-medium",
+                    footer: "hidden",
+                    footerAction: "hidden",
+                    footerActionText: "hidden"
+                  }
+                }}
+              />
 
-              {/* Testing Link for Development */}
+              {/* Testing Link */}
               <div className="mt-6 text-center">
                 <a 
                   href="/test-admin" 
@@ -160,4 +145,4 @@ const SignUpPage = () => {
   )
 };
 
-export default SignUpPage;
+export default SignInPage;

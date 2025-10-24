@@ -29,10 +29,14 @@ const Header = () => {
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
+        console.log('Fetching user role...');
         const response = await fetch('/api/user/sync', { method: 'POST' });
         if (response.ok) {
           const data = await response.json();
+          console.log('User role data:', data);
           setUserRole(data.user.role);
+        } else {
+          console.error('Failed to fetch user role:', response.status);
         }
       } catch (error) {
         console.error('Error fetching user role:', error);
@@ -128,28 +132,34 @@ const Header = () => {
                   </div>
                 </div>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-64">
-                <DropdownMenuLabel>
-                  <div className="flex flex-col space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">{user?.fullName || 'Guest User'}</span>
-                      {!loading && userRole && (
-                        <Badge 
-                          variant={userRole === 'Admin' ? 'default' : 'secondary'}
-                          className={`text-xs px-2 py-0.5 ${
-                            userRole === 'Admin' 
-                              ? 'bg-gradient-to-r from-purple-500 to-purple-600' 
-                              : 'bg-blue-100 text-blue-700'
-                          }`}
-                        >
-                          {userRole === 'Admin' ? <Shield className="h-3 w-3 mr-1" /> : <UserCircle className="h-3 w-3 mr-1" />}
-                          {userRole}
-                        </Badge>
-                      )}
-                    </div>
+              <DropdownMenuContent align="end" className="w-72">
+                <DropdownMenuLabel className="pb-3">
+                  <div className="flex flex-col space-y-2">
+                    <span className="text-sm font-semibold">{user?.fullName || 'Guest User'}</span>
                     <span className="text-xs text-gray-500 truncate">
                       {user?.primaryEmailAddress?.emailAddress || 'No email provided'}
                     </span>
+                    {/* Role Badge - More prominent */}
+                    {!loading && userRole && (
+                      <div className="pt-2">
+                        <Badge 
+                          variant={userRole === 'Admin' ? 'default' : 'secondary'}
+                          className={`text-xs px-3 py-1 inline-flex items-center gap-1 ${
+                            userRole === 'Admin' 
+                              ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white' 
+                              : 'bg-blue-100 text-blue-700'
+                          }`}
+                        >
+                          {userRole === 'Admin' ? <Shield className="h-3 w-3" /> : <UserCircle className="h-3 w-3" />}
+                          <span className="font-medium">{userRole}</span>
+                        </Badge>
+                      </div>
+                    )}
+                    {loading && (
+                      <div className="pt-2">
+                        <span className="text-xs text-gray-400">Loading role...</span>
+                      </div>
+                    )}
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />

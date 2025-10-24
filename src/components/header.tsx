@@ -139,9 +139,13 @@ const Header = () => {
                     <span className="text-xs text-gray-500 truncate">
                       {user?.primaryEmailAddress?.emailAddress || 'No email provided'}
                     </span>
-                    {/* Role Badge - More prominent */}
-                    {!loading && userRole && (
-                      <div className="pt-2">
+                    
+                    {/* Always visible test - Role Section */}
+                    <div className="pt-2 border-t border-gray-200 mt-2">
+                      <p className="text-xs text-gray-600 mb-1">Account Type:</p>
+                      {loading ? (
+                        <span className="text-xs text-gray-400">Loading role...</span>
+                      ) : userRole ? (
                         <Badge 
                           variant={userRole === 'Admin' ? 'default' : 'secondary'}
                           className={`text-xs px-3 py-1 inline-flex items-center gap-1 ${
@@ -153,13 +157,10 @@ const Header = () => {
                           {userRole === 'Admin' ? <Shield className="h-3 w-3" /> : <UserCircle className="h-3 w-3" />}
                           <span className="font-medium">{userRole}</span>
                         </Badge>
-                      </div>
-                    )}
-                    {loading && (
-                      <div className="pt-2">
-                        <span className="text-xs text-gray-400">Loading role...</span>
-                      </div>
-                    )}
+                      ) : (
+                        <span className="text-xs text-red-500">Role not found</span>
+                      )}
+                    </div>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />

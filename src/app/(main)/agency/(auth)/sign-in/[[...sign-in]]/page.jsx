@@ -50,7 +50,7 @@ const SignInPage = () => {
 
                     {/* Sign In Form */}
                     <SignIn 
-                    forceRedirectUrl="/admin"
+                    forceRedirectUrl="/"
                     signUpUrl="/agency/sign-up"
                     appearance={{
                       elements: {

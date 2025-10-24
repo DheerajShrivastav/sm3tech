@@ -1,4 +1,4 @@
-import { SignUp } from '@clerk/nextjs'
+ import { SignUp } from '@clerk/nextjs'
 import React from 'react'
 import { Building2, Shield, ArrowRight } from 'lucide-react'
 

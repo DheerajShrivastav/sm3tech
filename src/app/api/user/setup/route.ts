@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error in user setup:', error)
     return NextResponse.json(
-      { error: 'Failed to setup user', details: error.message },
+      { error: 'Failed to setup user', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     )
   }

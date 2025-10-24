@@ -18,7 +18,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { usePathname } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { SIDENAV_ITEMS } from "@/constants";
 
 interface DatabaseUser {

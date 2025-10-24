@@ -1,11 +1,12 @@
 'use client'
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelectedLayoutSegment } from "next/navigation";
 import useScroll from "@/hooks/use-scroll";
 import { cn } from "@/lib/utils";
-import { User, Settings, HelpCircle, LogOut } from "lucide-react";
+import { User, Settings, HelpCircle, LogOut, Shield, UserCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +22,29 @@ const Header = () => {
   const selectedLayout = useSelectedLayoutSegment();
   const { user } = useUser();
   const { signOut } = useClerk();
+  const [userRole, setUserRole] = useState<'Admin' | 'User' | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch user role from database
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const response = await fetch('/api/user/sync', { method: 'POST' });
+        if (response.ok) {
+          const data = await response.json();
+          setUserRole(data.user.role);
+        }
+      } catch (error) {
+        console.error('Error fetching user role:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchUserRole();
+    }
+  }, [user]);
 
   // Generate initials for avatar fallback
   const getInitials = (name?: string | null) => {
@@ -81,18 +105,48 @@ const Header = () => {
                     <p className="font-sora text-sm font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
                       {user?.fullName || 'Guest User'}
                     </p>
-                    {user?.primaryEmailAddress?.emailAddress && (
-                      <p className="text-xs text-gray-500 truncate max-w-[150px]">
-                        {user.primaryEmailAddress.emailAddress}
-                      </p>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {user?.primaryEmailAddress?.emailAddress && (
+                        <p className="text-xs text-gray-500 truncate max-w-[120px]">
+                          {user.primaryEmailAddress.emailAddress}
+                        </p>
+                      )}
+                      {!loading && userRole && (
+                        <Badge 
+                          variant={userRole === 'Admin' ? 'default' : 'secondary'}
+                          className={`text-xs px-2 py-0.5 ${
+                            userRole === 'Admin' 
+                              ? 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700' 
+                              : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                          }`}
+                        >
+                          {userRole === 'Admin' ? <Shield className="h-3 w-3 mr-1" /> : <UserCircle className="h-3 w-3 mr-1" />}
+                          {userRole}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64">
                 <DropdownMenuLabel>
                   <div className="flex flex-col space-y-1">
-                    <span className="text-sm font-medium">{user?.fullName || 'Guest User'}</span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">{user?.fullName || 'Guest User'}</span>
+                      {!loading && userRole && (
+                        <Badge 
+                          variant={userRole === 'Admin' ? 'default' : 'secondary'}
+                          className={`text-xs px-2 py-0.5 ${
+                            userRole === 'Admin' 
+                              ? 'bg-gradient-to-r from-purple-500 to-purple-600' 
+                              : 'bg-blue-100 text-blue-700'
+                          }`}
+                        >
+                          {userRole === 'Admin' ? <Shield className="h-3 w-3 mr-1" /> : <UserCircle className="h-3 w-3 mr-1" />}
+                          {userRole}
+                        </Badge>
+                      )}
+                    </div>
                     <span className="text-xs text-gray-500 truncate">
                       {user?.primaryEmailAddress?.emailAddress || 'No email provided'}
                     </span>

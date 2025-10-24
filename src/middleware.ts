@@ -37,7 +37,7 @@ export default clerkMiddleware(async (auth, req) => {
 
     if (userId && isPublicRoute(req) && currentUrl.pathname !== '/home') {
       // Redirect the user to the dashboard if they are logged in and accessing a public route
-      return NextResponse.redirect(new URL('/home', req.url))
+      return NextResponse.redirect(new URL('/admin', req.url))
     }
 
     if (!userId && !isPublicRoute(req) && !isPublicApiRoute(req)) {

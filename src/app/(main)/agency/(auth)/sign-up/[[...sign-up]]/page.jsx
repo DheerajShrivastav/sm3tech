@@ -63,6 +63,8 @@ const SignUpPage = () => {
               {/* Clerk Sign Up Component - Simple Styling */}
               <div className="clerk-signup-wrapper">
                 <SignUp
+                  forceRedirectUrl="/admin"
+                  signInUrl="/agency/sign-in"
                   appearance={{
                     elements: {
                       // Basic container styling

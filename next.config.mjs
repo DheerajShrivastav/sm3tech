@@ -5,6 +5,7 @@ const nextConfig = {
       'uploadthing.com',
       'utfs.io',
       'img.clerk.com',
+      'placehold.co',
     ],
   },
   reactStrictMode: true,

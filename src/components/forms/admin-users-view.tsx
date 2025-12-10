@@ -78,9 +78,13 @@ export default function AdminUsersView() {
                 <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full">
                   <User className="w-6 h-6 text-white" />
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900">{user.name || user.email}</h3>
-                  <p className="text-sm text-gray-500">{user.email}</p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold text-gray-900 truncate">
+                    {user.name && user.name.trim() !== '' && !user.name.toLowerCase().includes('null')
+                      ? user.name
+                      : user.email}
+                  </h3>
+                  <p className="text-sm text-gray-500 truncate">{user.email}</p>
                   <p className="text-xs text-gray-400 mt-1">
                     Joined: {new Date(user.createdAt).toLocaleDateString()}
                   </p>

@@ -170,7 +170,9 @@ export default function UserDocumentsPage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-800">
-              {userData?.name || userData?.email || 'User'}
+              {userData?.name && userData.name.trim() !== '' && !userData.name.toLowerCase().includes('null')
+                ? userData.name
+                : userData?.email || 'User'}
             </h1>
             <p className="text-gray-600">{userData?.email}</p>
           </div>

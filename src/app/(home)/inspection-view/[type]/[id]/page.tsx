@@ -226,8 +226,25 @@ const InspectionView = ({ params }: { params: Params }) => {
             <div className="p-2 md:p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-lg">
               {type === 'agency' ? <UserSquare2 className="w-4 h-4 md:w-6 md:h-6 text-white" /> : <Factory className="w-4 h-4 md:w-6 md:h-6 text-white" />}
             </div>
-            <h3 className="text-md md:text-2xl font-semibold text-blue-900">
-              {type === 'agency' ? 'Agency Documents' : type === 'factory-license' ? 'Factory License Details' : 'Plan Approval Documents'}
+            <h3 className='text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 flex items-center gap-2 md:gap-3'>
+              <FileText className='w-6 h-6 md:w-8 md:h-8 text-blue-600' />
+              {type === 'agency'
+                ? 'Agency Documents'
+                : type === 'factory-license'
+                ? 'Factory License Details'
+                : type === 'plan-approval'
+                ? 'Plan Approval Documents'
+                : type === 'stability-certificate'
+                ? 'Stability Certificate Documents'
+                : type === 'safety-audit-report'
+                ? 'Safety Audit Report Documents'
+                : type === 'consent-to-establish'
+                ? 'Consent To Establish Documents'
+                : type === 'consent-to-operate'
+                ? 'Consent To Operate Documents'
+                : type === 'compliance-report'
+                ? 'Compliance Report Documents'
+                : 'Documents'}
             </h3>
           </div>
           <button

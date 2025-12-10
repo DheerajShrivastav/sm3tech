@@ -1,43 +1,58 @@
 import React, { useEffect, useState, Key } from 'react'
 import Link from 'next/link'
-import { getAgenciesByUser, getPlanApprovalsByUser, getStabilityCertificatesByUser, getSafetyAuditReportsByUser, getConsentToEstablishByUser, getConsentToOperateByUser, getComplianceReportsByUser } from '@/lib/queries'
-import { IAgency } from '@/models/agency.model'
-import { IPlanApproval } from '@/models/planApproval.model'
-import { IStabilityCertificate } from '@/models/stabilityCertificate.model'
-import { ISafetyAuditReport } from '@/models/safetyAuditReport.model'
-import { IConsentToEstablish } from '@/models/consentToEstablish.model'
-import { IConsentToOperate } from '@/models/consentToOperate.model'
-import { IComplianceReport } from '@/models/complianceReport.model'
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+  getAgenciesByUser,
+  getPlanApprovalsByUser,
+  getStabilityCertificatesByUser,
+  getSafetyAuditReportsByUser,
+  getConsentToEstablishByUser,
+  getConsentToOperateByUser,
+  getComplianceReportsByUser
+} from '@/lib/queries'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import {
+  FileText,
+  Building2,
+  FileCheck2,
+  Shield,
+  ClipboardCheck,
+  Factory,
+  Droplets,
+  FileBarChart,
+  Upload,
+  CheckCircle2,
+  Clock,
+  XCircle
+} from 'lucide-react'
 
 type Props = {
   userId: string
 }
 
 const UserView: React.FC<Props> = ({ userId }) => {
-  const [agencies, setAgencies] = useState<IAgency[]>([])
-  const [planApprovals, setPlanApprovals] = useState<IPlanApproval[]>([])
-  const [stabilityCertificates, setStabilityCertificates] = useState<IStabilityCertificate[]>([])
-  const [safetyAuditReports, setSafetyAuditReports] = useState<ISafetyAuditReport[]>([])
-  const [consentToEstablishDocs, setConsentToEstablishDocs] = useState<IConsentToEstablish[]>([])
-  const [consentToOperateDocs, setConsentToOperateDocs] = useState<IConsentToOperate[]>([])
-  const [complianceReports, setComplianceReports] = useState<IComplianceReport[]>([])
+  const [agencies, setAgencies] = useState<any[]>([])
+  const [planApprovals, setPlanApprovals] = useState<any[]>([])
+  const [stabilityCertificates, setStabilityCertificates] = useState<any[]>([])
+  const [safetyAuditReports, setSafetyAuditReports] = useState<any[]>([])
+  const [consentToEstablishDocs, setConsentToEstablishDocs] = useState<any[]>([])
+  const [consentToOperateDocs, setConsentToOperateDocs] = useState<any[]>([])
+  const [complianceReports, setComplianceReports] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchAgencies = async () => {
       try {
-        const [fetchedAgencies, fetchedPlanApprovals, fetchedStabilityCertificates, fetchedSafetyAuditReports, fetchedConsentToEstablish, fetchedConsentToOperate, fetchedComplianceReports] = await Promise.all([
+        const [
+          fetchedAgencies,
+          fetchedPlanApprovals,
+          fetchedStabilityCertificates,
+          fetchedSafetyAuditReports,
+          fetchedConsentToEstablish,
+          fetchedConsentToOperate,
+          fetchedComplianceReports
+        ] = await Promise.all([
           getAgenciesByUser(userId),
           getPlanApprovalsByUser(userId),
           getStabilityCertificatesByUser(userId),
@@ -64,366 +79,185 @@ const UserView: React.FC<Props> = ({ userId }) => {
   }, [userId])
 
   if (loading) {
-    return <div>Loading...</div>
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    )
   }
 
   if (error) {
-    return <div>Error: {error}</div>
+    return <div className="text-red-500 text-center p-6">Error: {error}</div>
   }
 
-  const renderAgencies = () => {
-    return (
-      <Table className="w-full border border-gray-200 rounded-lg shadow-sm font-sora">
-        <TableCaption className="text-left text-gray-600 font-light">
-          List of Your Agencies
-        </TableCaption>
-        <TableHeader>
-          <TableRow className="bg-gray-100">
-            <TableHead className="py-3 px-4 font-medium text-gray-700">
-              Agency Name
-            </TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700 text-right">
-              Actions
-            </TableHead>
-          </TableRow>
-        </TableHeader>
+  const totalDocuments =
+    agencies.length +
+    planApprovals.length +
+    stabilityCertificates.length +
+    safetyAuditReports.length +
+    consentToEstablishDocs.length +
+    consentToOperateDocs.length +
+    complianceReports.length
 
-        <TableBody>
-          {agencies.map((agency) => (
-            <TableRow key={agency._id as Key} className="border-t">
-              <TableCell className="py-4 px-4 font-medium text-gray-900">
-                {agency?.occupierDocuments.name || 'N/A'}
-              </TableCell>
-              <TableCell className="py-4 px-4 text-right">
-                <Button className="mr-2 bg-indigo-600 text-white hover:bg-indigo-700">
-                  <Link href={`/inspection-view/agency/${agency?._id}`}>
-                    View Details
-                  </Link>
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    )
+  const getStatusIcon = (status: string) => {
+    if (status === 'approved') return <CheckCircle2 className="w-4 h-4 text-green-600" />
+    if (status === 'rejected') return <XCircle className="w-4 h-4 text-red-600" />
+    return <Clock className="w-4 h-4 text-yellow-600" />
   }
 
-  const renderPlanApprovals = () => {
-    return (
-      <Table className="w-full border border-gray-200 rounded-lg shadow-sm font-sora">
-        <TableCaption className="text-left text-gray-600 font-light">
-          Your Plan Approvals
-        </TableCaption>
-        <TableHeader>
-          <TableRow className="bg-gray-100">
-            <TableHead className="py-3 px-4 font-medium text-gray-700">
-              Status
-            </TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700">
-              Created Date
-            </TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700 text-right">
-              Actions
-            </TableHead>
-          </TableRow>
-        </TableHeader>
+  const getStatusColor = (status: string) => {
+    if (status === 'approved') return 'bg-green-100 text-green-800 border-green-200'
+    if (status === 'rejected') return 'bg-red-100 text-red-800 border-red-200'
+    return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+  }
 
-        <TableBody>
-          {planApprovals.map((planApproval) => (
-            <TableRow key={planApproval._id as Key} className="border-t">
-              <TableCell className="py-4 px-4">
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                    planApproval.status === 'approved'
-                      ? 'bg-green-100 text-green-800'
-                      : planApproval.status === 'rejected'
-                      ? 'bg-red-100 text-red-800'
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}
-                >
-                  {planApproval.status}
+  const DocumentCard = ({ icon: Icon, title, items, type, color }: any) => {
+    if (items.length === 0) return null
+
+    return (
+      <Card className={`p-6 bg-gradient-to-br ${color} border-2 hover:shadow-xl transition-all duration-300`}>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-3 bg-white rounded-lg shadow-md">
+            <Icon className="w-6 h-6 text-indigo-600" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+            <p className="text-sm text-gray-500">{items.length} document{items.length !== 1 ? 's' : ''}</p>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          {items.map((item: any) => (
+            <div
+              key={item._id}
+              className="p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  {getStatusIcon(item.status)}
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(item.status)}`}>
+                    {item.status}
+                  </span>
+                </div>
+                <span className="text-xs text-gray-500">
+                  {new Date(item.createdAt).toLocaleDateString()}
                 </span>
-              </TableCell>
-              <TableCell className="py-4 px-4 text-gray-600">
-                {new Date((planApproval as any).createdAt).toLocaleDateString()}
-              </TableCell>
-              <TableCell className="py-4 px-4 text-right">
-                <Button className="mr-2 bg-indigo-600 text-white hover:bg-indigo-700">
-                  <Link href={`/inspection-view/plan-approval/${planApproval._id}`}>
-                    View Details
-                  </Link>
+              </div>
+              <Link href={`/inspection-view/${type}/${item._id}`}>
+                <Button size="sm" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
+                  <FileText className="w-4 h-4 mr-2" />
+                  View Details
                 </Button>
-              </TableCell>
-            </TableRow>
+              </Link>
+            </div>
           ))}
-        </TableBody>
-      </Table>
-    )
-  }
-
-  const renderStabilityCertificates = () => {
-    return (
-      <Table className="w-full border border-gray-200 rounded-lg shadow-sm font-sora">
-        <TableCaption className="text-left text-gray-600 font-light">
-          Your Stability Certificates
-        </TableCaption>
-        <TableHeader>
-          <TableRow className="bg-gray-100">
-            <TableHead className="py-3 px-4 font-medium text-gray-700">
-              Status
-            </TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700">
-              Created Date
-            </TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700 text-right">
-              Actions
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {stabilityCertificates.map((cert) => (
-            <TableRow key={cert._id as Key} className="border-t">
-              <TableCell className="py-4 px-4">
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                    cert.status === 'approved'
-                      ? 'bg-green-100 text-green-800'
-                      : cert.status === 'rejected'
-                      ? 'bg-red-100 text-red-800'
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}
-                >
-                  {cert.status}
-                </span>
-              </TableCell>
-              <TableCell className="py-4 px-4 text-gray-600">
-                {new Date((cert as any).createdAt).toLocaleDateString()}
-              </TableCell>
-              <TableCell className="py-4 px-4 text-right">
-                <Button className="mr-2 bg-indigo-600 text-white hover:bg-indigo-700">
-                  <Link href={`/inspection-view/stability-certificate/${cert._id}`}>
-                    View Details
-                  </Link>
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    )
-  }
-
-  const renderSafetyAuditReports = () => {
-    return (
-      <Table className="w-full border border-gray-200 rounded-lg shadow-sm font-sora">
-        <TableCaption className="text-left text-gray-600 font-light">
-          Your Safety Audit Reports
-        </TableCaption>
-        <TableHeader>
-          <TableRow className="bg-gray-100">
-            <TableHead className="py-3 px-4 font-medium text-gray-700">
-              Status
-            </TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700">
-              Created Date
-            </TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700 text-right">
-              Actions
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {safetyAuditReports.map((report) => (
-            <TableRow key={report._id as Key} className="border-t">
-              <TableCell className="py-4 px-4">
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                    report.status === 'approved'
-                      ? 'bg-green-100 text-green-800'
-                      : report.status === 'rejected'
-                      ? 'bg-red-100 text-red-800'
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}
-                >
-                  {report.status}
-                </span>
-              </TableCell>
-              <TableCell className="py-4 px-4 text-gray-600">
-                {new Date((report as any).createdAt).toLocaleDateString()}
-              </TableCell>
-              <TableCell className="py-4 px-4 text-right">
-                <Button className="mr-2 bg-indigo-600 text-white hover:bg-indigo-700">
-                  <Link href={`/inspection-view/safety-audit-report/${report._id}`}>
-                    View Details
-                  </Link>
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    )
-  }
-
-  const renderConsentToEstablish = () => {
-    return (
-      <Table className="w-full border border-gray-200 rounded-lg shadow-sm font-sora">
-        <TableCaption className="text-left text-gray-600 font-light">
-          Your Consent To Establish Documents
-        </TableCaption>
-        <TableHeader>
-          <TableRow className="bg-gray-100">
-            <TableHead className="py-3 px-4 font-medium text-gray-700">
-              Status
-            </TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700">
-              Created Date
-            </TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700 text-right">
-              Actions
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {consentToEstablishDocs.map((doc) => (
-            <TableRow key={doc._id as Key} className="border-t">
-              <TableCell className="py-4 px-4">
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                    doc.status === 'approved'
-                      ? 'bg-green-100 text-green-800'
-                      : doc.status === 'rejected'
-                      ? 'bg-red-100 text-red-800'
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}
-                >
-                  {doc.status}
-                </span>
-              </TableCell>
-              <TableCell className="py-4 px-4 text-gray-600">
-                {new Date((doc as any).createdAt).toLocaleDateString()}
-              </TableCell>
-              <TableCell className="py-4 px-4 text-right">
-                <Button className="mr-2 bg-indigo-600 text-white hover:bg-indigo-700">
-                  <Link href={`/inspection-view/consent-to-establish/${doc._id}`}>
-                    View Details
-                  </Link>
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    )
-  }
-
-  const renderConsentToOperate = () => {
-    return (
-      <Table className="w-full border border-gray-200 rounded-lg shadow-sm font-sora">
-        <TableCaption className="text-left text-gray-600 font-light">Your Consent To Operate Documents</TableCaption>
-        <TableHeader>
-          <TableRow className="bg-gray-100">
-            <TableHead className="py-3 px-4 font-medium text-gray-700">Status</TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700">Created Date</TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700 text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {consentToOperateDocs.map((doc) => (
-            <TableRow key={doc._id as Key} className="border-t">
-              <TableCell className="py-4 px-4">
-                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                  doc.status === 'approved' ? 'bg-green-100 text-green-800' :
-                  doc.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
-                }`}>
-                  {doc.status}
-                </span>
-              </TableCell>
-              <TableCell className="py-4 px-4 text-gray-600">
-                {new Date((doc as any).createdAt).toLocaleDateString()}
-              </TableCell>
-              <TableCell className="py-4 px-4 text-right">
-                <Button className="mr-2 bg-indigo-600 text-white hover:bg-indigo-700">
-                  <Link href={`/inspection-view/consent-to-operate/${doc._id}`}>View Details</Link>
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    )
-  }
-
-  const renderComplianceReports = () => {
-    return (
-      <Table className="w-full border border-gray-200 rounded-lg shadow-sm font-sora">
-        <TableCaption className="text-left text-gray-600 font-light">Your Compliance Reports</TableCaption>
-        <TableHeader>
-          <TableRow className="bg-gray-100">
-            <TableHead className="py-3 px-4 font-medium text-gray-700">Status</TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700">Created Date</TableHead>
-            <TableHead className="py-3 px-4 font-medium text-gray-700 text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {complianceReports.map((report) => (
-            <TableRow key={report._id as Key} className="border-t">
-              <TableCell className="py-4 px-4">
-                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                  report.status === 'approved' ? 'bg-green-100 text-green-800' :
-                  report.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
-                }`}>
-                  {report.status}
-                </span>
-              </TableCell>
-              <TableCell className="py-4 px-4 text-gray-600">
-                {new Date((report as any).createdAt).toLocaleDateString()}
-              </TableCell>
-              <TableCell className="py-4 px-4 text-right">
-                <Button className="mr-2 bg-indigo-600 text-white hover:bg-indigo-700">
-                  <Link href={`/inspection-view/compliance-report/${report._id}`}>View Details</Link>
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+        </div>
+      </Card>
     )
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8">
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Your Agencies</h2>
-        {renderAgencies()}
+    <div className="max-w-7xl mx-auto p-6">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl p-8 mb-8 text-white">
+        <div className="flex items-center gap-4">
+          <div className="p-4 bg-white/20 backdrop-blur rounded-xl">
+            <Upload className="w-8 h-8" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold">My Documents</h1>
+            <p className="text-indigo-100 mt-1">
+              {totalDocuments > 0
+                ? `You have ${totalDocuments} document${totalDocuments !== 1 ? 's' : ''} uploaded`
+                : 'Upload your documents to get started'}
+            </p>
+          </div>
+        </div>
       </div>
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Your Plan Approvals</h2>
-        {renderPlanApprovals()}
-      </div>
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Your Stability Certificates</h2>
-        {renderStabilityCertificates()}
-      </div>
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Your Safety Audit Reports</h2>
-        {renderSafetyAuditReports()}
-      </div>
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Your Consent To Establish Documents</h2>
-        {renderConsentToEstablish()}
-      </div>
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Your Consent To Operate Documents</h2>
-        {renderConsentToOperate()}
-      </div>
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Your Compliance Reports</h2>
-        {renderComplianceReports()}
-      </div>
+
+      {/* Empty State */}
+      {totalDocuments === 0 && (
+        <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+          <div className="max-w-md mx-auto">
+            <div className="p-6 bg-indigo-50 rounded-full inline-block mb-6">
+              <Upload className="w-16 h-16 text-indigo-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-3">
+              No Documents Yet
+            </h2>
+            <p className="text-gray-600 mb-6">
+              You haven't uploaded any documents yet. Start by submitting your first document through the Services menu.
+            </p>
+            <Link href="/services">
+              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3">
+                <Upload className="w-4 h-4 mr-2" />
+                Upload Document
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Documents Grid */}
+      {totalDocuments > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <DocumentCard
+            icon={Building2}
+            title="Agency Documents"
+            items={agencies}
+            type="agency"
+            color="from-blue-50 to-cyan-50 border-blue-100"
+          />
+
+          <DocumentCard
+            icon={FileCheck2}
+            title="Plan Approvals"
+            items={planApprovals}
+            type="plan-approval"
+            color="from-green-50 to-emerald-50 border-green-100"
+          />
+
+          <DocumentCard
+            icon={Shield}
+            title="Stability Certificates"
+            items={stabilityCertificates}
+            type="stability-certificate"
+            color="from-purple-50 to-pink-50 border-purple-100"
+          />
+
+          <DocumentCard
+            icon={ClipboardCheck}
+            title="Safety Audit Reports"
+            items={safetyAuditReports}
+            type="safety-audit-report"
+            color="from-orange-50 to-amber-50 border-orange-100"
+          />
+
+          <DocumentCard
+            icon={Factory}
+            title="Consent To Establish"
+            items={consentToEstablishDocs}
+            type="consent-to-establish"
+            color="from-indigo-50 to-blue-50 border-indigo-100"
+          />
+
+          <DocumentCard
+            icon={Droplets}
+            title="Consent To Operate"
+            items={consentToOperateDocs}
+            type="consent-to-operate"
+            color="from-teal-50 to-cyan-50 border-teal-100"
+          />
+
+          <DocumentCard
+            icon={FileBarChart}
+            title="Compliance Reports"
+            items={complianceReports}
+            type="compliance-report"
+            color="from-rose-50 to-pink-50 border-rose-100"
+          />
+        </div>
+      )}
     </div>
   )
 }

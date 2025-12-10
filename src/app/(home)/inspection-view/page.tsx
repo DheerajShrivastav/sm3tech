@@ -1,7 +1,7 @@
 "use client"
 
 import React, { memo, useEffect, useState } from 'react';
-import AdminView from '../../../components/forms/admin-view';
+import AdminUsersView from '@/components/forms/admin-users-view';
 import UserView from '@/components/forms/user-view';
 import { getUser } from '@/lib/queries';
 import SideNav from '@/components/side-nav';
@@ -16,7 +16,7 @@ interface User {
 const Page = memo(() => {
   const [user, setUser] = useState<User | null>(null); // Use the User type
   const [loading, setLoading] = useState(true);
-  
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -40,11 +40,14 @@ const Page = memo(() => {
   const role = user?.role; // TypeScript knows user can be null
   const userId = user?._id; // TypeScript knows user can be null
   return (
-    <div className="">
-      {/* Main Content */}
-      <div className="flex-1 bg-gray-100 p-6 overflow-auto">
-        {role === 'Admin' ? <AdminView /> : userId ? <UserView userId={userId} /> : <div>User ID not found</div>}
-      </div>
+    <div>
+      {user && user.role === 'Admin' ? (
+        <AdminUsersView />
+      ) : user && user.role === 'User' ? (
+        <UserView userId={user._id} />
+      ) : (
+        <div>Loading...</div>
+      )}
     </div>
   )
 });

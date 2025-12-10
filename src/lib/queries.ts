@@ -1256,3 +1256,36 @@ export const getComplianceReportsByUser = async (userId: string) => {
     throw new Error('Error getting compliance reports by user')
   }
 }
+
+// ============================================
+// USER MANAGEMENT
+// ============================================
+
+export const getAllUsers = async () => {
+  try {
+    await connectDB()
+    const users = await User.find({})
+      .select('_id email name role createdAt clerkId')
+      .sort({ createdAt: -1 })
+      .lean()
+      .exec()
+    return JSON.parse(JSON.stringify(users))
+  } catch (error) {
+    console.error('Error getting all users:', error)
+    throw new Error('Error getting all users')
+  }
+}
+
+export const getUserById = async (userId: string) => {
+  try {
+    await connectDB()
+    const user = await User.findById(userId)
+      .select('_id email name role createdAt')
+      .lean()
+      .exec()
+    return JSON.parse(JSON.stringify(user))
+  } catch (error) {
+    console.error('Error getting user by id:', error)
+    throw new Error('Error getting user by id')
+  }
+}

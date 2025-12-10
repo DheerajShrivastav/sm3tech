@@ -242,7 +242,7 @@ const InspectionView = ({ params }: { params: Params }) => {
 
          <div className='text-black text-lg p-2'>
            {type === 'agency' && (data as IAgency).occupierDocuments?.name}
-           {type === 'plan-approval' && <span className="text-gray-700">Plan Approval ID: {(data as IPlanApproval)._id}</span>}
+           {type === 'plan-approval' && <span className="text-gray-700">Plan Approval ID: {String((data as IPlanApproval)._id)}</span>}
          </div>
 
 

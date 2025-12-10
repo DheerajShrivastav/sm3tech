@@ -23,6 +23,10 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
         submenu: true,
         subMenuItems: [
           {
+            title: "Agency Information",
+            path: "/services/factory-act/agency-information",
+          },
+          {
             title: "Plan Approval",
             path: "/services/factory-act/plan-approval",
           },

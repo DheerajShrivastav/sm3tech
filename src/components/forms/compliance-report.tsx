@@ -4,22 +4,23 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { Card } from '@/components/ui/card'
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
-import FileUpload from '@/components/file-upload'
-import { useToast } from '@/components/ui/use-toast'
+import { AlertDialog } from '../ui/alert-dialog'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '../ui/form'
+import { Button } from '../ui/button'
+import FileUpload from '../file-upload'
+import { useToast } from '../ui/use-toast'
 import { useRouter } from 'next/navigation'
 import { initUser, getUser, upsertComplianceReport } from '@/lib/queries'
 import {
   FileCheck2,
   FileText,
   Map,
-  BarChart3,
+  Wind,
   Droplets,
   Trash2,
   Shield,
-  Wind,
+  BarChart3,
   ClipboardCheck,
   Flame,
   Award,
@@ -50,6 +51,27 @@ interface ComplianceReportProps {
   data?: any
 }
 
+const getIconForDocument = (fieldName: string) => {
+  const iconMap: Record<string, any> = {
+    consentOperatingCopy: FileCheck2,
+    consentEstablishCopy: FileText,
+    environmentalClearance: Shield,
+    plantLayout: Map,
+    airMonitoring: Wind,
+    waterMonitoring: Droplets,
+    etpStpLogbook: Droplets,
+    hazardousWasteLogbook: Trash2,
+    cteComplianceReport: ClipboardCheck,
+    safetyAuditReport: Shield,
+    environmentalAudit: BarChart3,
+    annualReturns: FileText,
+    hazardousWasteAuth: Shield,
+    fireSafety: Flame,
+    membershipCETP: Award,
+  }
+  return iconMap[fieldName] || FileText
+}
+
 const ComplianceReport: React.FC<ComplianceReportProps> = ({ data }) => {
   const { toast } = useToast()
   const router = useRouter()
@@ -75,27 +97,6 @@ const ComplianceReport: React.FC<ComplianceReportProps> = ({ data }) => {
     },
   })
 
-  const getIconForDocument = (fieldName: string) => {
-    const iconMap: Record<string, any> = {
-      consentOperatingCopy: FileCheck2,
-      consentEstablishCopy: FileText,
-      environmentalClearance: Shield,
-      plantLayout: Map,
-      airMonitoring: Wind,
-      waterMonitoring: Droplets,
-      etpStpLogbook: Droplets,
-      hazardousWasteLogbook: Trash2,
-      cteComplianceReport: ClipboardCheck,
-      safetyAuditReport: Shield,
-      environmentalAudit: BarChart3,
-      annualReturns: FileText,
-      hazardousWasteAuth: Shield,
-      fireSafety: Flame,
-      membershipCETP: Award,
-    }
-    return iconMap[fieldName] || FileText
-  }
-
   const renderFileUploadField = (
     field: keyof FormSchemaType,
     label: string,
@@ -110,24 +111,26 @@ const ComplianceReport: React.FC<ComplianceReportProps> = ({ data }) => {
           name={field}
           render={({ field: formField }) => (
             <FormItem>
-              <div className="flex items-start gap-3 p-4 rounded-lg border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 transition-all duration-300 shadow-sm hover:shadow-md">
-                <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg shadow-md">
-                  <Icon className="w-5 h-5 text-white" />
+              <div className="bg-gradient-to-br from-blue-50 to-white p-4 rounded-xl border border-blue-100 shadow-sm h-full hover:shadow-md transition-all duration-200">
+                <div className="flex items-center space-x-2 mb-3">
+                  <div className="bg-blue-100 p-2 rounded-lg">
+                    <Icon className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <h3 className="font-sora font-semibold text-gray-900 text-sm">
+                    {label}{' '}
+                    {!required && (
+                      <span className="text-gray-500 text-xs">(Optional)</span>
+                    )}
+                  </h3>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <FormLabel className="text-sm font-medium text-gray-700 block mb-2">
-                    {label}
-                    {required && <span className="text-red-500 ml-1">*</span>}
-                  </FormLabel>
-                  <FormControl>
-                    <FileUpload
-                      apiEndpoint="pdfUploader"
-                      onChange={formField.onChange}
-                      value={formField.value || ''}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-xs mt-1" />
+                <div className="rounded-lg p-3 transition-colors hover:border-blue-400">
+                  <FileUpload
+                    apiEndpoint="pdfUploader"
+                    onChange={formField.onChange}
+                    value={formField.value || ''}
+                  />
                 </div>
+                <FormMessage className="text-red-500 text-xs mt-1" />
               </div>
             </FormItem>
           )}
@@ -193,74 +196,91 @@ const ComplianceReport: React.FC<ComplianceReportProps> = ({ data }) => {
   }
 
   return (
-    <Card className="w-full max-w-7xl mx-auto p-6 md:p-8 bg-white shadow-xl rounded-2xl">
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl shadow-lg">
-            <ClipboardCheck className="w-6 h-6 md:w-8 md:h-8 text-white" />
-          </div>
-          <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Compliance Report Submission
-          </h2>
-        </div>
-        <p className="text-gray-600 text-sm md:text-base ml-14">
-          Upload all required compliance documents for regulatory review
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-4 md:p-8 font-sora">
+      {/* Decorative elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute -left-4 top-20 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl" />
+        <div className="absolute right-10 bottom-10 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl" />
       </div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-          {/* Required Documents Section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 pb-3 border-b border-gray-200">
-              <FileCheck2 className="w-5 h-5 text-purple-600" />
-              <h3 className="text-lg font-semibold text-gray-800">
-                Required Documents
-                <span className="text-sm font-normal text-gray-500 ml-2">(12 mandatory fields)</span>
-              </h3>
-            </div>
-            <div className="flex flex-wrap -mx-2">
-              {renderFileUploadField('consentOperatingCopy', 'Copy of Consent to Operate (CTO)')}
-              {renderFileUploadField('consentEstablishCopy', 'Copy of Consent to Establish (CTE)')}
-              {renderFileUploadField('environmentalClearance', 'Environmental Clearance Certificate')}
-              {renderFileUploadField('plantLayout', 'Latest Plant Layout (As Commissioned)')}
-              {renderFileUploadField('airMonitoring', 'Air Quality Monitoring Reports & Stack Emission Data')}
-              {renderFileUploadField('waterMonitoring', 'Water/Wastewater Quality Monitoring Reports')}
-              {renderFileUploadField('etpStpLogbook', 'ETP/STP Operation & Maintenance Logbooks')}
-              {renderFileUploadField('hazardousWasteLogbook', 'Hazardous Waste Generation & Disposal Logbook')}
-              {renderFileUploadField('cteComplianceReport', 'Compliance Report to CTE Conditions')}
-              {renderFileUploadField('safetyAuditReport', 'Safety Audit Report & Compliance Recommendations')}
-              {renderFileUploadField('environmentalAudit', 'Form V - Annual Environmental Audit Report')}
-              {renderFileUploadField('annualReturns', 'Statutory Annual Returns Submission Proof')}
-            </div>
-          </div>
+      <AlertDialog>
+        <Card className="w-full bg-white/80 backdrop-blur-lg shadow-xl border border-blue-100 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 rounded-bl-full" />
 
-          {/* Optional Documents Section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 pb-3 border-b border-gray-200">
-              <Shield className="w-5 h-5 text-gray-600" />
-              <h3 className="text-lg font-semibold text-gray-800">Optional Documents</h3>
+          <CardHeader className="space-y-4 pb-8">
+            <div className="flex items-center space-x-3">
+              <div className="h-12 w-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                <ClipboardCheck className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl font-bold font-sora text-gray-900">
+                  Compliance Report Submission
+                </CardTitle>
+                <p className="text-gray-600 text-sm mt-1">
+                  Upload all required compliance documents for regulatory review
+                </p>
+              </div>
             </div>
-            <div className="flex flex-wrap -mx-2">
-              {renderFileUploadField('hazardousWasteAuth', 'Authorization for Handling Hazardous Waste', false)}
-              {renderFileUploadField('fireSafety', 'Fire Safety Certificate & Plan', false)}
-              {renderFileUploadField('membershipCETP', 'Membership Certificate of CETP/CHWTSDF (if applicable)', false)}
-            </div>
-          </div>
+          </CardHeader>
 
-          {/* Submit Button */}
-          <div className="flex justify-end pt-6 border-t border-gray-200">
-            <Button
-              type="submit"
-              className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-              disabled={form.formState.isSubmitting}
-            >
-              {form.formState.isSubmitting ? 'Saving...' : 'Save Compliance Report'}
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </Card>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+                {/* Required Documents Section */}
+                <div className="bg-blue-50/50 p-6 rounded-xl border border-blue-100">
+                  <div className="flex items-center space-x-2 mb-6">
+                    <FileCheck2 className="h-5 w-5 text-blue-600" />
+                    <FormLabel className="text-gray-900 font-sora font-semibold text-lg">
+                      Required Documents
+                    </FormLabel>
+                  </div>
+                  <div className="flex flex-wrap -mx-2">
+                    {renderFileUploadField('consentOperatingCopy', 'Copy of Consent to Operate (CTO)')}
+                    {renderFileUploadField('consentEstablishCopy', 'Copy of Consent to Establish (CTE)')}
+                    {renderFileUploadField('environmentalClearance', 'Environmental Clearance Certificate')}
+                    {renderFileUploadField('plantLayout', 'Latest Plant Layout (As Commissioned)')}
+                    {renderFileUploadField('airMonitoring', 'Air Quality Monitoring Reports & Stack Emission Data')}
+                    {renderFileUploadField('waterMonitoring', 'Water/Wastewater Quality Monitoring Reports')}
+                    {renderFileUploadField('etpStpLogbook', 'ETP/STP Operation & Maintenance Logbooks')}
+                    {renderFileUploadField('hazardousWasteLogbook', 'Hazardous Waste Generation & Disposal Logbook')}
+                    {renderFileUploadField('cteComplianceReport', 'Compliance Report to CTE Conditions')}
+                    {renderFileUploadField('safetyAuditReport', 'Safety Audit Report & Compliance Recommendations')}
+                    {renderFileUploadField('environmentalAudit', 'Form V - Annual Environmental Audit Report')}
+                    {renderFileUploadField('annualReturns', 'Statutory Annual Returns Submission Proof')}
+                  </div>
+                </div>
+
+                {/* Optional Documents Section */}
+                <div className="bg-blue-50/50 p-6 rounded-xl border border-blue-100">
+                  <div className="flex items-center space-x-2 mb-6">
+                    <Shield className="h-5 w-5 text-blue-600" />
+                    <FormLabel className="text-gray-900 font-sora font-semibold text-lg">
+                      Optional Documents
+                    </FormLabel>
+                  </div>
+                  <div className="flex flex-wrap -mx-2">
+                    {renderFileUploadField('hazardousWasteAuth', 'Authorization for Handling Hazardous Waste', false)}
+                    {renderFileUploadField('fireSafety', 'Fire Safety Certificate & Plan', false)}
+                    {renderFileUploadField('membershipCETP', 'Membership Certificate of CETP/CHWTSDF (if applicable)', false)}
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <div className="pt-8 flex justify-end">
+                  <Button
+                    type="submit"
+                    className="bg-blue-600 hover:bg-blue-700 text-sm text-white font-semibold p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+                    disabled={form.formState.isSubmitting}
+                  >
+                    {form.formState.isSubmitting ? 'Saving...' : 'Save Compliance Report Information'}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      </AlertDialog>
+    </div>
   )
 }
 

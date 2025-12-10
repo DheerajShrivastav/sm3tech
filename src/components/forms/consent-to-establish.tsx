@@ -4,55 +4,83 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { Card } from '@/components/ui/card'
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
-import FileUpload from '@/components/file-upload'
-import { useToast } from '@/components/ui/use-toast'
+import { AlertDialog } from '../ui/alert-dialog'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '../ui/form'
+import { Button } from '../ui/button'
+import FileUpload from '../file-upload'
+import { useToast } from '../ui/use-toast'
 import { useRouter } from 'next/navigation'
 import { initUser, getUser, upsertConsentToEstablish } from '@/lib/queries'
 import {
-  FileCheck2,
   FileText,
-  Map,
-  MapPin,
   Factory,
-  FileKey,
+  Map,
+  ListChecks,
+  Droplets,
+  Wind,
+  Trash2,
   Shield,
+  FileCheck2,
+  Flame,
+  Award,
+  BookOpen,
+  FileBarChart,
   Building2,
-  Lightbulb,
-  Leaf,
-  Zap,
-  Users,
-  ScrollText,
 } from 'lucide-react'
 
-// Validation Schema - 14 required, 1 optional
+// Validation Schema
 const FormSchema = z.object({
   applicationForm: z.string().min(1, 'Application Form is required'),
-  dpr: z.string().min(1, 'Detailed Project Report (DPR) is required'),
-  sitePlan: z.string().min(1, 'Site Plan/Layout Plan/Plant Layout is required'),
-  geoMap: z.string().min(1, 'Geographical Map/Location Details is required'),
-  processDescription: z.string().min(1, 'Manufacturing Process Description with Flow Diagram is required'),
-  landOwnership: z.string().min(1, 'Land Ownership Certificate or Rent/Lease Agreement is required'),
-  localApproval: z.string().optional(), // Optional field
-  capitalInvestmentProof: z.string().min(1, 'Capital Investment Proof is required'),
-  nocFromAuthority: z.string().min(1, 'NOC from MIDC/Local Authority is required'),
-  industryRegistration: z.string().min(1, 'Industry Registration is required'),
-  pollutionControl: z.string().min(1, 'Proposed Pollution Control Measures is required'),
-  emp: z.string().min(1, 'Environmental Management Plan is required'),
-  powerWaterSanction: z.string().min(1, 'Power and Water Connection Sanction Letters is required'),
-  boardResolution: z.string().min(1, 'Board Resolution or Authority Letter is required'),
-  affidavit: z.string().min(1, 'Affidavit/Undertaking is required'),
+  projectReport: z.string().min(1, 'Project/DPR Report is required'),
+  siteLayout: z.string().min(1, 'Site Layout & Plant Layout Plan is required'),
+  productionDetails: z.string().min(1, 'Production Process Details  is required'),
+  rawMaterialsList: z.string().min(1, 'List of Raw Materials & Chemicals is required'),
+  waterRequirement: z.string().min(1, 'Water Requirement & Source Details is required'),
+  effluentDetails: z.string().min(1, 'Wastewater/Effluent Generation &Treatment Plan is required'),
+  airEmissions: z.string().min(1, 'Air Emissions Details & Control Measures is required'),
+  solidWaste: z.string().min(1, 'Solid/Hazardous Waste Management Plan is required'),
+  onlineMonitoring: z.string().min(1, 'Online Monitoring System (OCEMS) Proposal is required'),
+  environmentalImpact: z.string().min(1, 'Environmental Impact Assessment (if required) is required'),
+  landOwnership: z.string().min(1, 'Proof of Land Ownership/Lease Agreement is required'),
+  naRegCertificate: z.string().min(1, 'No Objection from Local Authority is required'),
+  investmentDetails: z.string().min(1, 'Details of Capital Investment in Pollution Control is required'),
+  hazardousAuth: z.string().optional(),
+  fireSafety: z.string().optional(),
+  membershipCerts: z.string().optional(),
 })
 
 type FormSchemaType = z.infer<typeof FormSchema>
 
-interface ConsentToEstablishProps {
+interface ConsentToEstablishFormProps {
   data?: any
 }
 
-const ConsentToEstablish: React.FC<ConsentToEstablishProps> = ({ data }) => {
+const getIconForDocument = (name: string) => {
+  const icons = {
+    applicationForm: FileText,
+    projectReport: FileBarChart,
+    siteLayout: Map,
+    productionDetails: Factory,
+    rawMaterialsList: ListChecks,
+    waterRequirement: Droplets,
+    effluentDetails: Droplets,
+    airEmissions: Wind,
+    solidWaste: Trash2,
+    onlineMonitoring: Building2,
+    environmentalImpact: Shield,
+    landOwnership: FileText,
+    naRegCertificate: FileCheck2,
+    investmentDetails: FileText,
+    hazardousAuth: Shield,
+    fireSafety: Flame,
+    membershipCerts: Award,
+    default: FileText,
+  }
+  return icons[name as keyof typeof icons] || icons.default
+}
+
+const ConsentToEstablishForm: React.FC<ConsentToEstablishFormProps> = ({ data }) => {
   const { toast } = useToast()
   const router = useRouter()
 
@@ -60,78 +88,59 @@ const ConsentToEstablish: React.FC<ConsentToEstablishProps> = ({ data }) => {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       applicationForm: data?.applicationForm || '',
-      dpr: data?.dpr || '',
-      sitePlan: data?.sitePlan || '',
-      geoMap: data?.geoMap || '',
-      processDescription: data?.processDescription || '',
+      projectReport: data?.projectReport || '',
+      siteLayout: data?.siteLayout || '',
+      productionDetails: data?.productionDetails || '',
+      rawMaterialsList: data?.rawMaterialsList || '',
+      waterRequirement: data?.waterRequirement || '',
+      effluentDetails: data?.effluentDetails || '',
+      airEmissions: data?.airEmissions || '',
+      solidWaste: data?.solidWaste || '',
+      onlineMonitoring: data?.onlineMonitoring || '',
+      environmentalImpact: data?.environmentalImpact || '',
       landOwnership: data?.landOwnership || '',
-      localApproval: data?.localApproval || '',
-      capitalInvestmentProof: data?.capitalInvestmentProof || '',
-      nocFromAuthority: data?.nocFromAuthority || '',
-      industryRegistration: data?.industryRegistration || '',
-      pollutionControl: data?.pollutionControl || '',
-      emp: data?.emp || '',
-      powerWaterSanction: data?.powerWaterSanction || '',
-      boardResolution: data?.boardResolution || '',
-      affidavit: data?.affidavit || '',
+      naRegCertificate: data?.naRegCertificate || '',
+      investmentDetails: data?.investmentDetails || '',
+      hazardousAuth: data?.hazardousAuth || '',
+      fireSafety: data?.fireSafety || '',
+      membershipCerts: data?.membershipCerts || '',
     },
   })
 
-  // Helper function to get icon for each document type
-  const getIconForDocument = (fieldName: string) => {
-    const iconMap: Record<string, any> = {
-      applicationForm: FileCheck2,
-      dpr: FileText,
-      sitePlan: Map,
-      geoMap: MapPin,
-      processDescription: Factory,
-      landOwnership: FileKey,
-      localApproval: Shield,
-      capitalInvestmentProof: Building2,
-      nocFromAuthority: Shield,
-      industryRegistration: FileCheck2,
-      pollutionControl: Lightbulb,
-      emp: Leaf,
-      powerWaterSanction: Zap,
-      boardResolution: Users,
-      affidavit: ScrollText,
-    }
-    return iconMap[fieldName] || FileText
-  }
-
-  // Render file upload field
   const renderFileUploadField = (
-    field: keyof FormSchemaType,
+    field: string,
     label: string,
-    required: boolean = true
+    required = true,
+    apiEndpoint = 'pdfUploader'
   ) => {
     const Icon = getIconForDocument(field)
-
     return (
-      <div className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-2" key={field}>
+      <div className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-2">
         <FormField
           control={form.control}
-          name={field}
+          name={field as any}
           render={({ field: formField }) => (
             <FormItem>
-              <div className="flex items-start gap-3 p-4 rounded-lg border border-gray-200 bg-gradient-to-br from-green-50 to-teal-50 hover:from-green-100 hover:to-teal-100 transition-all duration-300 shadow-sm hover:shadow-md">
-                <div className="p-2 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg shadow-md">
-                  <Icon className="w-5 h-5 text-white" />
+              <div className="bg-gradient-to-br from-blue-50 to-white p-4 rounded-xl border border-blue-100 shadow-sm h-full hover:shadow-md transition-all duration-200">
+                <div className="flex items-center space-x-2 mb-3">
+                  <div className="bg-blue-100 p-2 rounded-lg">
+                    <Icon className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <h3 className="font-sora font-semibold text-gray-900 text-sm">
+                    {label}{' '}
+                    {!required && (
+                      <span className="text-gray-500 text-xs">(Optional)</span>
+                    )}
+                  </h3>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <FormLabel className="text-sm font-medium text-gray-700 block mb-2">
-                    {label}
-                    {required && <span className="text-red-500 ml-1">*</span>}
-                  </FormLabel>
-                  <FormControl>
-                    <FileUpload
-                      apiEndpoint="pdfUploader"
-                      onChange={formField.onChange}
-                      value={formField.value || ''}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-xs mt-1" />
+                <div className="rounded-lg p-3 transition-colors hover:border-blue-400">
+                  <FileUpload
+                    apiEndpoint={apiEndpoint as 'pdfUploader' | 'imageUploader'}
+                    onChange={formField.onChange}
+                    value={formField.value || ''}
+                  />
                 </div>
+                <FormMessage className="text-red-500 text-xs mt-1" />
               </div>
             </FormItem>
           )}
@@ -140,13 +149,9 @@ const ConsentToEstablish: React.FC<ConsentToEstablishProps> = ({ data }) => {
     )
   }
 
-  // Form submission handler
   const handleSubmit = async (values: FormSchemaType) => {
     try {
-      // Initialize user
       await initUser({})
-
-      // Get current user
       const currentUser = await getUser()
 
       if (!currentUser) {
@@ -158,43 +163,39 @@ const ConsentToEstablish: React.FC<ConsentToEstablishProps> = ({ data }) => {
         return
       }
 
-      // Prepare consent to establish data
       const consentToEstablishData: any = {
         user: currentUser._id,
         applicationForm: values.applicationForm,
-        dpr: values.dpr,
-        sitePlan: values.sitePlan,
-        geoMap: values.geoMap,
-        processDescription: values.processDescription,
+        projectReport: values.projectReport,
+        siteLayout: values.siteLayout,
+        productionDetails: values.productionDetails,
+        rawMaterialsList: values.rawMaterialsList,
+        waterRequirement: values.waterRequirement,
+        effluentDetails: values.effluentDetails,
+        airEmissions: values.airEmissions,
+        solidWaste: values.solidWaste,
+        onlineMonitoring: values.onlineMonitoring,
+        environmentalImpact: values.environmentalImpact,
         landOwnership: values.landOwnership,
-        localApproval: values.localApproval,
-        capitalInvestmentProof: values.capitalInvestmentProof,
-        nocFromAuthority: values.nocFromAuthority,
-        industryRegistration: values.industryRegistration,
-        pollutionControl: values.pollutionControl,
-        emp: values.emp,
-        powerWaterSanction: values.powerWaterSanction,
-        boardResolution: values.boardResolution,
-        affidavit: values.affidavit,
+        naRegCertificate: values.naRegCertificate,
+        investmentDetails: values.investmentDetails,
+        hazardousAuth: values.hazardousAuth,
+        fireSafety: values.fireSafety,
+        membershipCerts: values.membershipCerts,
       }
 
-      // Only add _id if updating existing document
       if (data?._id) {
         consentToEstablishData._id = data._id
       }
 
-      // Upsert to database
       const response = await upsertConsentToEstablish(consentToEstablishData)
-
       console.log('Consent To Establish saved:', response)
 
-      // Show success toast
       toast({
         title: 'Success',
         description: 'Consent To Establish saved successfully!',
       })
 
-      // Redirect to inspection view
       router.push('/inspection-view')
     } catch (error) {
       console.error('Error submitting form:', error)
@@ -207,77 +208,95 @@ const ConsentToEstablish: React.FC<ConsentToEstablishProps> = ({ data }) => {
   }
 
   return (
-    <Card className="w-full max-w-7xl mx-auto p-6 md:p-8 bg-white shadow-xl rounded-2xl">
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-3 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl shadow-lg">
-            <FileCheck2 className="w-6 h-6 md:w-8 md:h-8 text-white" />
-          </div>
-          <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
-            Consent To Establish Application
-          </h2>
-        </div>
-        <p className="text-gray-600 text-sm md:text-base ml-14">
-          Upload all required documents for MPCB Consent To Establish
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-4 md:p-8 font-sora">
+      {/* Decorative elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute -left-4 top-20 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl" />
+        <div className="absolute right-10 bottom-10 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl" />
       </div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-          {/* Required Documents Section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 pb-3 border-b border-gray-200">
-              <FileCheck2 className="w-5 h-5 text-green-600" />
-              <h3 className="text-lg font-semibold text-gray-800">
-                Required Documents
-                <span className="text-sm font-normal text-gray-500 ml-2">(14 mandatory fields)</span>
-              </h3>
-            </div>
-            <div className="flex flex-wrap -mx-2">
-              {renderFileUploadField('applicationForm', 'Application Form (online or prescribed by MPCB)')}
-              {renderFileUploadField('dpr', 'Detailed Project Report (DPR)')}
-              {renderFileUploadField('sitePlan', 'Site Plan/Layout Plan/Plant Layout')}
-              {renderFileUploadField('geoMap', 'Geographical Map/Location Details')}
-              {renderFileUploadField('processDescription', 'Manufacturing Process Description with Flow Diagram')}
-              {renderFileUploadField('landOwnership', 'Land Ownership Certificate or Rent/Lease Agreement')}
-              {renderFileUploadField('capitalInvestmentProof', 'Capital Investment Proof (CA Certificate or Balance Sheet)')}
-              {renderFileUploadField('nocFromAuthority', 'NOC from MIDC/Local Authority')}
-              {renderFileUploadField('industryRegistration', 'Industry Registration (e.g. SSI/MSME Certificate)')}
-              {renderFileUploadField('pollutionControl', 'Proposed Pollution Control Measures')}
-              {renderFileUploadField('emp', 'Environmental Management Plan')}
-              {renderFileUploadField('powerWaterSanction', 'Power and Water Connection Sanction Letters')}
-              {renderFileUploadField('boardResolution', 'Board Resolution or Authority Letter for Authorized Person')}
-              {renderFileUploadField('affidavit', 'Affidavit/Undertaking as required by MPCB')}
-            </div>
-          </div>
+      <AlertDialog>
+        <Card className="w-full bg-white/80 backdrop-blur-lg shadow-xl border border-blue-100 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 rounded-bl-full" />
 
-          {/* Optional Documents Section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 pb-3 border-b border-gray-200">
-              <Shield className="w-5 h-5 text-gray-600" />
-              <h3 className="text-lg font-semibold text-gray-800">
-                Optional Documents
-              </h3>
+          <CardHeader className="space-y-4 pb-8">
+            <div className="flex items-center space-x-3">
+              <div className="h-12 w-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Factory className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl font-bold font-sora text-gray-900">
+                  Consent To Establish Documents
+                </CardTitle>
+                <p className="text-gray-600 text-sm mt-1">
+                  Upload all required consent to establish documents
+                </p>
+              </div>
             </div>
-            <div className="flex flex-wrap -mx-2">
-              {renderFileUploadField('localApproval', 'Approval from Local Bodies/Government (if applicable)', false)}
-            </div>
-          </div>
+          </CardHeader>
 
-          {/* Submit Button */}
-          <div className="flex justify-end pt-6 border-t border-gray-200">
-            <Button
-              type="submit"
-              className="px-8 py-3 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-              disabled={form.formState.isSubmitting}
-            >
-              {form.formState.isSubmitting ? 'Saving...' : 'Save Consent To Establish'}
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </Card>
+          <CardContent>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(handleSubmit)}
+                className="space-y-8"
+              >
+                {/* Required Documents Section */}
+                <div className="bg-blue-50/50 p-6 rounded-xl border border-blue-100">
+                  <div className="flex items-center space-x-2 mb-6">
+                    <FileText className="h-5 w-5 text-blue-600" />
+                    <FormLabel className="text-gray-900 font-sora font-semibold text-lg">
+                      Required Documents
+                    </FormLabel>
+                  </div>
+                  <div className="flex flex-wrap -mx-2">
+                    {renderFileUploadField('applicationForm', 'Application Form (for CTE)')}
+                    {renderFileUploadField('projectReport', 'Project/DPR Report')}
+                    {renderFileUploadField('siteLayout', 'Site Layout & Plant Layout Plan')}
+                    {renderFileUploadField('productionDetails', 'Production Process Details')}
+                    {renderFileUploadField('rawMaterialsList', 'List of Raw Materials & Chemicals')}
+                    {renderFileUploadField('waterRequirement', 'Water Requirement & Source Details')}
+                    {renderFileUploadField('effluentDetails', 'Wastewater/Effluent Generation & Treatment Plan')}
+                    {renderFileUploadField('airEmissions', 'Air Emissions Details & Control Measures')}
+                    {renderFileUploadField('solidWaste', 'Solid/Hazardous Waste Management Plan')}
+                    {renderFileUploadField('onlineMonitoring', 'Online Monitoring System (OCEMS) Proposal')}
+                    {renderFileUploadField('environmentalImpact', 'Environmental Impact Assessment (if required)')}
+                    {renderFileUploadField('landOwnership', 'Proof of Land Ownership/Lease Agreement')}
+                    {renderFileUploadField('naRegCertificate', 'No Objection from Local Authority')}
+                    {renderFileUploadField('investmentDetails', 'Details of Capital Investment in Pollution Control')}
+                  </div>
+                </div>
+
+                {/* Optional Documents Section */}
+                <div className="bg-blue-50/50 p-6 rounded-xl border border-blue-100">
+                  <div className="flex items-center space-x-2 mb-6">
+                    <FileText className="h-5 w-5 text-blue-600" />
+                    <FormLabel className="text-gray-900 font-sora font-semibold text-lg">
+                      Optional Documents
+                    </FormLabel>
+                  </div>
+                  <div className="flex flex-wrap -mx-2">
+                    {renderFileUploadField('hazardousAuth', 'Authorization for Handling Hazardous Waste (if any)', false)}
+                    {renderFileUploadField('fireSafety', 'Fire Safety Certificate & Plan (if available)', false)}
+                    {renderFileUploadField('membershipCerts', 'Membership Certificates (CETP/CHWTSDF, if applicable)', false)}
+                  </div>
+                </div>
+
+                <div className="pt-8 flex justify-end">
+                  <Button
+                    type="submit"
+                    className="bg-blue-600 hover:bg-blue-700 text-sm text-white font-semibold p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+                  >
+                    Save Consent To Establish Information
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      </AlertDialog>
+    </div>
   )
 }
 
-export default ConsentToEstablish
+export default ConsentToEstablishForm

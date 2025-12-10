@@ -38,14 +38,8 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
             title: "Safety Audit Report",
             path: "/services/factory-act/safety-audit-report",
           },
-          {
-            title: "Testing & Calibration",
-            path: "/services/factory-act/testing-calibration",
-          },
-          {
-            title: "SEP Plant Fitness",
-            path: "/services/factory-act/sep-plant-fitness",
-          },
+
+
         ],
       },
       {

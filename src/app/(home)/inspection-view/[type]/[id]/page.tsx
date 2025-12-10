@@ -1,13 +1,15 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { getAgency, getFactoryLicense, getPlanApproval, getStabilityCertificate, getSafetyAuditReport, getConsentToEstablish } from '@/lib/queries'
+import { getAgency, getFactoryLicense, getPlanApproval, getStabilityCertificate, getSafetyAuditReport, getConsentToEstablish, getConsentToOperate, getComplianceReport } from '@/lib/queries'
 import { IAgency } from '@/models/agency.model'
 import { IFactoryLicenseDetails } from '@/models/factoryLicenseDetails.model'
 import { IPlanApproval } from '@/models/planApproval.model'
 import { IStabilityCertificate } from '@/models/stabilityCertificate.model'
 import { ISafetyAuditReport } from '@/models/safetyAuditReport.model'
 import { IConsentToEstablish } from '@/models/consentToEstablish.model'
+import { IConsentToOperate } from '@/models/consentToOperate.model'
+import { IComplianceReport } from '@/models/complianceReport.model'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { ChevronDown, FileText, Image, Fingerprint, UserSquare2, Factory, CheckCircle2, Shield, FileCheck2 } from "lucide-react"
 import {
@@ -95,7 +97,7 @@ const DocumentSection = ({
 const InspectionView = ({ params }: { params: Params }) => {
   const type = params.type
   const id = params.id
-  const [data, setData] = useState<IAgency | IFactoryLicenseDetails | IPlanApproval | IStabilityCertificate | ISafetyAuditReport | IConsentToEstablish | null>(null)
+  const [data, setData] = useState<IAgency | IFactoryLicenseDetails | IPlanApproval | IStabilityCertificate | ISafetyAuditReport | IConsentToEstablish | IConsentToOperate | IComplianceReport | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [sectionsOpen, setSectionsOpen] = useState<{[key: string]: boolean}>({})
@@ -117,6 +119,10 @@ const InspectionView = ({ params }: { params: Params }) => {
             fetchedData = await getSafetyAuditReport(id as string);
           } else if (type === 'consent-to-establish') {
             fetchedData = await getConsentToEstablish(id as string);
+          } else if (type === 'consent-to-operate') {
+            fetchedData = await getConsentToOperate(id as string);
+          } else if (type === 'compliance-report') {
+            fetchedData = await getComplianceReport(id as string);
           }
           if (fetchedData) {
             setData(fetchedData);
@@ -152,6 +158,16 @@ const InspectionView = ({ params }: { params: Params }) => {
                 auditDocument: false,
               };
             } else if (type === 'consent-to-establish') {
+              initialSectionsState = {
+                requiredDocs: false,
+                optionalDocs: false,
+              };
+            } else if (type === 'consent-to-operate') {
+              initialSectionsState = {
+                requiredDocs: false,
+                optionalDocs: false,
+              };
+            } else if (type === 'compliance-report') {
               initialSectionsState = {
                 requiredDocs: false,
                 optionalDocs: false,
@@ -640,6 +656,92 @@ const InspectionView = ({ params }: { params: Params }) => {
                     label="Approval from Local Bodies/Government (if applicable)"
                     href={(data as IConsentToEstablish).localApproval}
                   />
+                </>
+              }
+            />
+          </>
+        )}
+
+        {type === 'consent-to-operate' && (
+          <>
+            {/* Required Documents Section */}
+            <DocumentSection
+              title="Required Documents"
+              icon={FileCheck2}
+              isOpen={sectionsOpen.requiredDocs}
+              onToggle={(open) => setSectionsOpen(prev => ({ ...prev, requiredDocs: open }))}
+              maxHeight="500px"
+              documents={
+                <>
+                  <DocumentLink label="Application Form (for CTO)" href={(data as IConsentToOperate).applicationForm} />
+                  <DocumentLink label="Copy of Consent to Establish already granted" href={(data as IConsentToOperate).cteCopy} />
+                  <DocumentLink label="Latest Plant Layout as Commissioned" href={(data as IConsentToOperate).plantLayout} />
+                  <DocumentLink label="Details of Production Capacity, Products & By-products, and Raw Materials" href={(data as IConsentToOperate).productionDetails} />
+                  <DocumentLink label="Environmental Monitoring Reports (air, water, noise analysis)" href={(data as IConsentToOperate).envMonitoringReports} />
+                  <DocumentLink label="Compliance Report to CTE Conditions" href={(data as IConsentToOperate).cteComplianceReport} />
+                  <DocumentLink label="ETP/STP Operation & Maintenance Records" href={(data as IConsentToOperate).etpStpRecords} />
+                  <DocumentLink label="Hazardous and Non-hazardous Waste Disposal Arrangements" href={(data as IConsentToOperate).wasteDisposal} />
+                  <DocumentLink label="Water Balance and Wastewater Management Plan" href={(data as IConsentToOperate).waterBalance} />
+                  <DocumentLink label="Details of Air Pollution Control Equipment" href={(data as IConsentToOperate).airPollutionControl} />
+                  <DocumentLink label="Details of Chemicals, Fuels, and Raw Materials Storage" href={(data as IConsentToOperate).storageDetails} />
+                </>
+              }
+            />
+
+            {/* Optional Documents Section */}
+            <DocumentSection
+              title="Optional Documents"
+              icon={Shield}
+              isOpen={sectionsOpen.optionalDocs}
+              onToggle={(open) => setSectionsOpen(prev => ({ ...prev, optionalDocs: open }))}
+              documents={
+                <>
+                  <DocumentLink label="Authorization for Handling Hazardous Waste (if any)" href={(data as IConsentToOperate).hazardousWasteAuth} />
+                  <DocumentLink label="Membership Certificates of CETP/CHWTSDF (if applicable)" href={(data as IConsentToOperate).membershipCertificates} />
+                  <DocumentLink label="Fire Safety Certificate/Plan (if applicable)" href={(data as IConsentToOperate).fireSafety} />
+                  <DocumentLink label="Renewal Documents as per Last Consent (if renewal is sought)" href={(data as IConsentToOperate).renewalDocs} />
+                </>
+              }
+            />
+          </>
+        )}
+
+        {type === 'compliance-report' && (
+          <>
+            <DocumentSection
+              title="Required Documents"
+              icon={FileCheck2}
+              isOpen={sectionsOpen.requiredDocs}
+              onToggle={(open) => setSectionsOpen(prev => ({ ...prev, requiredDocs: open }))}
+              maxHeight="500px"
+              documents={
+                <>
+                  <DocumentLink label="Copy of Consent to Operate (CTO)" href={(data as IComplianceReport).consentOperatingCopy} />
+                  <DocumentLink label="Copy of Consent to Establish (CTE)" href={(data as IComplianceReport).consentEstablishCopy} />
+                  <DocumentLink label="Environmental Clearance Certificate" href={(data as IComplianceReport).environmentalClearance} />
+                  <DocumentLink label="Latest Plant Layout (As Commissioned)" href={(data as IComplianceReport).plantLayout} />
+                  <DocumentLink label="Air Quality Monitoring Reports & Stack Emission Data" href={(data as IComplianceReport).airMonitoring} />
+                  <DocumentLink label="Water/Wastewater Quality Monitoring Reports" href={(data as IComplianceReport).waterMonitoring} />
+                  <DocumentLink label="ETP/STP Operation & Maintenance Logbooks" href={(data as IComplianceReport).etpStpLogbook} />
+                  <DocumentLink label="Hazardous Waste Generation & Disposal Logbook" href={(data as IComplianceReport).hazardousWasteLogbook} />
+                  <DocumentLink label="Compliance Report to CTE Conditions" href={(data as IComplianceReport).cteComplianceReport} />
+                  <DocumentLink label="Safety Audit Report & Compliance Recommendations" href={(data as IComplianceReport).safetyAuditReport} />
+                  <DocumentLink label="Form V - Annual Environmental Audit Report" href={(data as IComplianceReport).environmentalAudit} />
+                  <DocumentLink label="Statutory Annual Returns Submission Proof" href={(data as IComplianceReport).annualReturns} />
+                </>
+              }
+            />
+
+            <DocumentSection
+              title="Optional Documents"
+              icon={Shield}
+              isOpen={sectionsOpen.optionalDocs}
+              onToggle={(open) => setSectionsOpen(prev => ({ ...prev, optionalDocs: open }))}
+              documents={
+                <>
+                  <DocumentLink label="Authorization for Handling Hazardous Waste" href={(data as IComplianceReport).hazardousWasteAuth} />
+                  <DocumentLink label="Fire Safety Certificate & Plan" href={(data as IComplianceReport).fireSafety} />
+                  <DocumentLink label="Membership Certificate of CETP/CHWTSDF (if applicable)" href={(data as IComplianceReport).membershipCETP} />
                 </>
               }
             />

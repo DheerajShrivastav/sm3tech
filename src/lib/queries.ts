@@ -14,6 +14,8 @@ import { PlanApproval, IPlanApproval } from '@/models/planApproval.model'
 import { StabilityCertificate, IStabilityCertificate } from '@/models/stabilityCertificate.model'
 import { SafetyAuditReport, ISafetyAuditReport } from '@/models/safetyAuditReport.model'
 import { ConsentToEstablish, IConsentToEstablish } from '@/models/consentToEstablish.model'
+import { ConsentToOperate, IConsentToOperate } from '@/models/consentToOperate.model'
+import { ComplianceReport, IComplianceReport } from '@/models/complianceReport.model'
 // Write a query to save the current user's profile from Clerk provider in MongoDB
 export const initUser = async (newUser: Partial<IUser>) => {
   const user = await currentUser()
@@ -1052,5 +1054,205 @@ export const getConsentToEstablishByUser = async (userId: string) => {
   } catch (error) {
     console.error('Error getting consent to establish by user:', error)
     throw new Error('Error getting consent to establish by user')
+  }
+}
+// ============================================
+// CONSENT TO OPERATE CRUD OPERATIONS
+// ============================================
+
+export const upsertConsentToOperate = async (data: Partial<IConsentToOperate>) => {
+  try {
+    console.log('inside upsertConsentToOperate', data)
+    await connectDB()
+
+    let consentToOperate;
+
+    if (data._id) {
+      consentToOperate = await ConsentToOperate.findOne({ _id: data._id })
+    }
+
+    if (consentToOperate) {
+      consentToOperate = await ConsentToOperate.findByIdAndUpdate(
+        consentToOperate._id,
+        {
+          $set: {
+            applicationForm: data.applicationForm,
+            cteCopy: data.cteCopy,
+            plantLayout: data.plantLayout,
+            productionDetails: data.productionDetails,
+            envMonitoringReports: data.envMonitoringReports,
+            cteComplianceReport: data.cteComplianceReport,
+            etpStpRecords: data.etpStpRecords,
+            wasteDisposal: data.wasteDisposal,
+            waterBalance: data.waterBalance,
+            airPollutionControl: data.airPollutionControl,
+            storageDetails: data.storageDetails,
+            hazardousWasteAuth: data.hazardousWasteAuth,
+            membershipCertificates: data.membershipCertificates,
+            fireSafety: data.fireSafety,
+            renewalDocs: data.renewalDocs,
+            user: data.user,
+          },
+        },
+        { new: true }
+      )
+    } else {
+      consentToOperate = new ConsentToOperate({
+        applicationForm: data.applicationForm,
+        cteCopy: data.cteCopy,
+        plantLayout: data.plantLayout,
+        productionDetails: data.productionDetails,
+        envMonitoringReports: data.envMonitoringReports,
+        cteComplianceReport: data.cteComplianceReport,
+        etpStpRecords: data.etpStpRecords,
+        wasteDisposal: data.wasteDisposal,
+        waterBalance: data.waterBalance,
+        airPollutionControl: data.airPollutionControl,
+        storageDetails: data.storageDetails,
+        hazardousWasteAuth: data.hazardousWasteAuth,
+        membershipCertificates: data.membershipCertificates,
+        fireSafety: data.fireSafety,
+        renewalDocs: data.renewalDocs,
+        user: data.user,
+      })
+      await consentToOperate.save()
+      console.log('New consent to operate created:', consentToOperate._id)
+    }
+
+    return JSON.stringify(consentToOperate)
+  } catch (error) {
+    console.error('Error in upsertConsentToOperate:', error)
+    throw error
+  }
+}
+
+export const getConsentToOperateDocuments = async () => {
+  try {
+    await connectDB()
+    const documents = await ConsentToOperate.find({}).populate('user').lean().exec()
+    return JSON.parse(JSON.stringify(documents))
+  } catch (error) {
+    console.error('Error getting consent to operate documents:', error)
+    throw new Error('Error getting consent to operate documents')
+  }
+}
+
+export const getConsentToOperate = async (id: string): Promise<IConsentToOperate | null> => {
+  try {
+    await connectDB()
+    const document = await ConsentToOperate.findOne({ _id: id }).populate('user').lean().exec()
+    return document as IConsentToOperate | null
+  } catch (error) {
+    console.error('Error getting consent to operate:', error)
+    throw new Error('Error getting consent to operate')
+  }
+}
+
+export const deleteConsentToOperate = async (id: string) => {
+  try {
+    await connectDB()
+    const doc = await ConsentToOperate.findById({ id })
+    if (!doc) return 'Consent to operate not found'
+
+    // Delete all files
+    doc?.applicationForm && deleteFile({ fileKey: doc.applicationForm })
+    doc?.cteCopy && deleteFile({ fileKey: doc.cteCopy })
+    doc?.plantLayout && deleteFile({ fileKey: doc.plantLayout })
+    doc?.productionDetails && deleteFile({ fileKey: doc.productionDetails })
+    doc?.envMonitoringReports && deleteFile({ fileKey: doc.envMonitoringReports })
+    doc?.cteComplianceReport && deleteFile({ fileKey: doc.cteComplianceReport })
+    doc?.etpStpRecords && deleteFile({ fileKey: doc.etpStpRecords })
+    doc?.wasteDisposal && deleteFile({ fileKey: doc.wasteDisposal })
+    doc?.waterBalance && deleteFile({ fileKey: doc.waterBalance })
+    doc?.airPollutionControl && deleteFile({ fileKey: doc.airPollutionControl })
+    doc?.storageDetails && deleteFile({ fileKey: doc.storageDetails })
+    doc?.hazardousWasteAuth && deleteFile({ fileKey: doc.hazardousWasteAuth })
+    doc?.membershipCertificates && deleteFile({ fileKey: doc.membershipCertificates })
+    doc?.fireSafety && deleteFile({ fileKey: doc.fireSafety })
+    doc?.renewalDocs && deleteFile({ fileKey: doc.renewalDocs })
+
+    await ConsentToOperate.findByIdAndDelete({ _id: id })
+    return doc
+  } catch (error) {
+    console.error('Error deleting consent to operate:', error)
+    throw new Error('Error deleting consent to operate')
+  }
+}
+
+export const getConsentToOperateByUser = async (userId: string) => {
+  try {
+    await connectDB()
+    const documents = await ConsentToOperate.find({ user: userId }).populate('user').lean().exec()
+    return JSON.parse(JSON.stringify(documents))
+  } catch (error) {
+    console.error('Error getting consent to operate by user:', error)
+    throw new Error('Error getting consent to operate by user')
+  }
+}
+
+// ============================================
+// COMPLIANCE REPORT CRUD OPERATIONS
+// ============================================
+
+export const upsertComplianceReport = async (data: Partial<IComplianceReport>) => {
+  try {
+    console.log('inside upsertComplianceReport', data)
+    await connectDB()
+
+    let report;
+
+    if (data._id) {
+      report = await ComplianceReport.findOne({ _id: data._id })
+    }
+
+    if (report) {
+      report = await ComplianceReport.findByIdAndUpdate(
+        report._id,
+        { $set: { ...data } },
+        { new: true }
+      )
+    } else {
+      report = new ComplianceReport(data)
+      await report.save()
+      console.log('New compliance report created:', report._id)
+    }
+
+    return JSON.stringify(report)
+  } catch (error) {
+    console.error('Error in upsertComplianceReport:', error)
+    throw error
+  }
+}
+
+export const getComplianceReports = async () => {
+  try {
+    await connectDB()
+    const reports = await ComplianceReport.find({}).populate('user').lean().exec()
+    return JSON.parse(JSON.stringify(reports))
+  } catch (error) {
+    console.error('Error getting compliance reports:', error)
+    throw new Error('Error getting compliance reports')
+  }
+}
+
+export const getComplianceReport = async (id: string): Promise<IComplianceReport | null> => {
+  try {
+    await connectDB()
+    const report = await ComplianceReport.findOne({ _id: id }).populate('user').lean().exec()
+    return report as IComplianceReport | null
+  } catch (error) {
+    console.error('Error getting compliance report:', error)
+    throw new Error('Error getting compliance report')
+  }
+}
+
+export const getComplianceReportsByUser = async (userId: string) => {
+  try {
+    await connectDB()
+    const reports = await ComplianceReport.find({ user: userId }).populate('user').lean().exec()
+    return JSON.parse(JSON.stringify(reports))
+  } catch (error) {
+    console.error('Error getting compliance reports by user:', error)
+    throw new Error('Error getting compliance reports by user')
   }
 }

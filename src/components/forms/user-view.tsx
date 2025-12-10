@@ -41,9 +41,12 @@ const UserView: React.FC<Props> = ({ userId }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  console.log('UserView rendered with userId:', userId)
+
   useEffect(() => {
     const fetchAgencies = async () => {
       try {
+        console.log('Fetching documents for user:', userId)
         const [
           fetchedAgencies,
           fetchedPlanApprovals,
@@ -61,33 +64,64 @@ const UserView: React.FC<Props> = ({ userId }) => {
           getConsentToOperateByUser(userId),
           getComplianceReportsByUser(userId)
         ])
-        setAgencies(fetchedAgencies)
-        setPlanApprovals(fetchedPlanApprovals)
-        setStabilityCertificates(fetchedStabilityCertificates)
-        setSafetyAuditReports(fetchedSafetyAuditReports)
-        setConsentToEstablishDocs(fetchedConsentToEstablish)
-        setConsentToOperateDocs(fetchedConsentToOperate)
-        setComplianceReports(fetchedComplianceReports)
+        console.log('Fetched documents:', {
+          agencies: fetchedAgencies?.length || 0,
+          planApprovals: fetchedPlanApprovals?.length || 0,
+          stabilityCertificates: fetchedStabilityCertificates?.length || 0,
+        })
+        setAgencies(fetchedAgencies || [])
+        setPlanApprovals(fetchedPlanApprovals || [])
+        setStabilityCertificates(fetchedStabilityCertificates || [])
+        setSafetyAuditReports(fetchedSafetyAuditReports || [])
+        setConsentToEstablishDocs(fetchedConsentToEstablish || [])
+        setConsentToOperateDocs(fetchedConsentToOperate || [])
+        setComplianceReports(fetchedComplianceReports || [])
+        setLoading(false)
       } catch (error) {
+        console.error('Error fetching documents:', error)
         setError(error instanceof Error ? error.message : String(error))
-      } finally {
         setLoading(false)
       }
     }
 
-    fetchAgencies()
+    // Timeout fallback to ensure loading stops
+    const timeoutId = setTimeout(() => {
+      console.log('Timeout reached, stopping loading')
+      setLoading(false)
+    }, 5000)
+
+    if (userId) {
+      fetchAgencies().finally(() => {
+        clearTimeout(timeoutId)
+      })
+    } else {
+      console.error('No userId provided')
+      setLoading(false)
+      clearTimeout(timeoutId)
+    }
+
+    return () => clearTimeout(timeoutId)
   }, [userId])
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 font-sora">Loading your documents...</p>
+        </div>
       </div>
     )
   }
 
   if (error) {
-    return <div className="text-red-500 text-center p-6">Error: {error}</div>
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="text-red-500 text-lg font-sora">Error: {error}</div>
+        </div>
+      </div>
+    )
   }
 
   const totalDocuments =
@@ -177,21 +211,21 @@ const UserView: React.FC<Props> = ({ userId }) => {
 
       {/* Empty State */}
       {totalDocuments === 0 && (
-        <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+        <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-blue-100 p-12 text-center">
           <div className="max-w-md mx-auto">
-            <div className="p-6 bg-indigo-50 rounded-full inline-block mb-6">
-              <Upload className="w-16 h-16 text-indigo-600" />
+            <div className="p-6 bg-blue-50 rounded-full inline-block mb-6">
+              <Upload className="w-16 h-16 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-3">
+            <h2 className="text-3xl font-bold font-sora text-gray-900 mb-3">
               No Documents Yet
             </h2>
-            <p className="text-gray-600 mb-6">
-              You haven't uploaded any documents yet. Start by submitting your first document through the Services menu.
+            <p className="text-gray-600 mb-6 text-lg">
+              You have not uploaded any documents yet. Please upload a document to get started.
             </p>
             <Link href="/services">
-              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3">
-                <Upload className="w-4 h-4 mr-2" />
-                Upload Document
+              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 text-lg">
+                <Upload className="w-5 h-5 mr-2" />
+                Upload Your First Document
               </Button>
             </Link>
           </div>

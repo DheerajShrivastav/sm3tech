@@ -63,22 +63,8 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
             title: "Consent Condition Compliance Report",
             path: "/services/mpcb/compliance-report",
           },
-          {
-            title: "JVS Sampling & Analysis Report",
-            path: "/services/mpcb/jvs-sampling-report",
-          },
-          {
-            title: "Form V (Environment Statement / Audit)",
-            path: "/services/mpcb/form-v",
-          },
-          {
-            title: "Form IV (Hazardous Waste Returns)",
-            path: "/services/mpcb/form-iv",
-          },
-          {
-            title: "Carbon Footprint Study Report",
-            path: "/services/mpcb/carbon-footprint-study",
-          },
+
+
         ],
       },
     ],

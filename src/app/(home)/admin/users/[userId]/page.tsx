@@ -109,14 +109,14 @@ export default function UserDocumentsPage() {
   }
 
   const DocumentCard = ({ icon: Icon, title, count, items, type }: any) => (
-    <Card className="p-6 bg-gradient-to-br from-white to-blue-50 border-2 border-blue-100">
+    <Card className="p-6 bg-gradient-to-br from-white to-blue-50 border-2 border-blue-100 hover:shadow-2xl transition-all duration-300">
       <div className="flex items-center gap-3 mb-4">
-        <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg">
-          <Icon className="w-5 h-5 text-white" />
+        <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-md">
+          <Icon className="w-6 h-6 text-white" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-          <p className="text-sm text-gray-500">{count} document{count !== 1 ? 's' : ''}</p>
+          <h3 className="text-lg font-semibold font-sora text-gray-900">{title}</h3>
+          <p className="text-sm text-gray-600">{count} document{count !== 1 ? 's' : ''}</p>
         </div>
       </div>
 
@@ -125,10 +125,10 @@ export default function UserDocumentsPage() {
           {items.map((item: any) => (
             <div
               key={item._id}
-              className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow"
+              className="flex items-center justify-between p-3 bg-white rounded-lg border border-blue-100 hover:shadow-md transition-shadow"
             >
               <div className="flex-1">
-                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                   item.status === 'approved' ? 'bg-green-100 text-green-800' :
                   item.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
                 }`}>
@@ -139,7 +139,7 @@ export default function UserDocumentsPage() {
                 </p>
               </div>
               <Link href={`/inspection-view/${type}/${item._id}`}>
-                <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700">
+                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
                   View
                 </Button>
               </Link>
@@ -153,34 +153,45 @@ export default function UserDocumentsPage() {
   )
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <Button
-        onClick={() => router.back()}
-        variant="outline"
-        className="mb-6"
-      >
-        <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Users
-      </Button>
-
-      <div className="bg-white shadow-lg rounded-lg p-6 mb-8">
-        <div className="flex items-center gap-4 mb-2">
-          <div className="p-4 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full">
-            <UserIcon className="w-8 h-8 text-white" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">
-              {userData?.name && userData.name.trim() !== '' && !userData.name.toLowerCase().includes('null')
-                ? userData.name
-                : userData?.email || 'User'}
-            </h1>
-            <p className="text-gray-600">{userData?.email}</p>
-          </div>
-        </div>
-        <p className="text-sm text-gray-500 ml-20">
-          All submitted documents and forms
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-4 md:p-8 font-sora">
+      {/* Decorative elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute -left-4 top-20 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl" />
+        <div className="absolute right-10 bottom-10 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl" />
       </div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        <Button
+          onClick={() => router.back()}
+          variant="outline"
+          className="mb-6 border-blue-200 hover:bg-blue-50 hover:border-blue-300"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Users
+        </Button>
+
+        <Card className="bg-white/80 backdrop-blur-lg shadow-xl border border-blue-100 relative overflow-hidden mb-8">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 rounded-bl-full" />
+
+          <div className="p-8">
+            <div className="flex items-center gap-4">
+              <div className="h-16 w-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                <UserIcon className="w-9 h-9 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold font-sora text-gray-900">
+                  {userData?.name && userData.name.trim() !== '' && !userData.name.toLowerCase().includes('null')
+                    ? userData.name
+                    : userData?.email || 'User'}
+                </h1>
+                <p className="text-gray-600 mt-1">{userData?.email}</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  All submitted documents and forms
+                </p>
+              </div>
+            </div>
+          </div>
+        </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <DocumentCard
@@ -238,6 +249,7 @@ export default function UserDocumentsPage() {
           items={complianceReports}
           type="compliance-report"
         />
+      </div>
       </div>
     </div>
   )

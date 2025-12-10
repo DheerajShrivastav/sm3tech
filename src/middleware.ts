@@ -29,15 +29,25 @@ export default clerkMiddleware(async (auth, req) => {
 
     if (
       currentUrl.pathname === '/agency/sign-in' ||
-      currentUrl.pathname === '/agency/sign-up'
+      currentUrl.pathname === '/agency/sign-up' ||
+      currentUrl.pathname.startsWith('/agency/sign-in/') ||
+      currentUrl.pathname.startsWith('/agency/sign-up/')
     ) {
-      // Allow the user to access the sign-in page
+      // Allow the user to access the sign-in/sign-up pages and their sub-routes (verification, etc.)
+      return NextResponse.next()
+    }
+
+    // Don't redirect if user is in the middle of sign-up verification
+    if (currentUrl.pathname.includes('sign-up') || currentUrl.pathname.includes('verify')) {
       return NextResponse.next()
     }
 
     if (userId && isPublicRoute(req) && currentUrl.pathname !== '/home') {
       // Redirect the user to the dashboard if they are logged in and accessing a public route
-      return NextResponse.redirect(new URL('/home', req.url))
+      // BUT NOT if they're in sign-up flow
+      if (!currentUrl.pathname.includes('/agency/')) {
+        return NextResponse.redirect(new URL('/home', req.url))
+      }
     }
 
     if (!userId && !isPublicRoute(req) && !isPublicApiRoute(req)) {

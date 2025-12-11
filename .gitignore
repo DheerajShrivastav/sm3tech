@@ -12,7 +12,8 @@
 # next.js
 /.next/
 /out/
-
+/docs/
+/docs/user-manual-assets/
 # production
 /build
 
@@ -35,5 +36,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-#database 
+#database
 .env
